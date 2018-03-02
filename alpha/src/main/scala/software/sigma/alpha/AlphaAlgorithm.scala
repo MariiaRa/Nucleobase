@@ -1,7 +1,5 @@
 package software.sigma.alpha
 
-import scala.collection.mutable.ListBuffer
-
 class AlphaAlgorithm(log: List[String]) {
 
   //get complementary base pairs
@@ -31,78 +29,103 @@ class AlphaAlgorithm(log: List[String]) {
     to.distinct
   }
 
+  //val footprint = new FootprintMartix(List('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), List("ABDEFH", "ACGH", "ABEDFH"))
+  val footprint = new FootprintMartix(List('A', 'B', 'C', 'D', 'E'), List("ABCEBCD", "ABCD"))
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e'), List("abcd", "acbd", "aed"))
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd'), List("abd", "acd"))
+  // val footprint = new FootprintMartix(List('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), List("ABCEFGH", "ABCEGFH", "ADEGFH", "ADEFGH"))
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e', 'f'), List("abef", "abecdbf", "abcedbf","abcdebf", "aebcdbf" ))
+
+  val directFollowers = footprint.getDirectFollowers
+ // println("D " + directFollowers)
+  val causality = footprint.getCausalities(directFollowers)
+ // println("C " + causality)
+  val parallels = footprint.getParallelism(directFollowers)
+ // println("P " + parallels)
+  val choices = footprint.getExclusiveness(directFollowers)
+ // println("Ch " + choices)
+  footprint.buildRelations(causality, parallels, choices, directFollowers)
+  val allTransitions = (directFollowers ::: causality).diff(parallels)
+  //println((directFollowers ::: causality).diff(parallels))
+
+  val inputEvents = (for {a <- allTransitions} yield a._1).distinct
+ // println("\nInput events " + inputEvents)
+
+  val outputEvents = (for {a <- allTransitions} yield a._2).distinct
+ // println("\nOutput events " + outputEvents)
+
   //4 step: set of (A,B) where a in A and b in B are in causality relation, all activities in A independent relation and same for B
   //5 step: delete (A,B) from X W that are not maximal
-  private def getTransitions(): List[(List[Char], List[Char])] = {
-    val seenEvents = getAllSeenEvents(log)
+  /*
+   * (A,B), A = first, B = second
+*/
 
-    val seenEventsSuperList = (1 to seenEvents.size).flatMap(seenEvents.toList.combinations).map(_.toList).toList
-    //println("SuperList: " + seenEventsSuperList)
+  val inputEventsSuperList = (1 until inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
+  val outputEventsSuperList = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
 
-    //get relations
-    val footprint = new FootprintMartix(seenEvents, log)
-    val directFollowers = footprint.getDirectFollowers
-    val listOfCausalities = footprint.getCausalities(directFollowers).map { case (a, b) => List(a, b) }
-    //println("casualities: " + listOfCausalities)
-    val listOfParallels = footprint.getParallelism(directFollowers).map { case (a, b) => List(a, b) }
-    //println("parallels: " + listOfParallels)
-    val listOfChoices = footprint.getExclusiveness(directFollowers).map { case (a, b) => List(a, b) }
-    //println("exclude: " + listOfChoices)
 
-    //filter all possible combinations of events against relations
-    val transitions = for {
-      set <- seenEventsSuperList
-      prl <- listOfParallels
-      cas <- listOfCausalities
-      if !listOfParallels.contains(set)
-      if !listOfChoices.contains(set)
-      if set.size > 1
-      if !prl.forall(set.contains)
-      if cas.forall(set.contains)
-      if !(initialEvents(log) ::: endEvents(log)).forall(set.contains)
-    } yield set
-    transitions.distinct
-println("XL: " + transitions.distinct)
-    val reducedPlaces = for {
-      p1 <- transitions.distinct
-      p2 <- transitions.distinct
-      if (p1 != p2)
-      if !p1.forall(p2.contains)
-      if p1.length < p2.length
-    } yield p2
-    reducedPlaces.distinct
-
-    val first = (for {
-      p <- reducedPlaces.distinct
-      if initialEvents(log).forall(p.contains)
-    } yield (initialEvents(log), p.diff(initialEvents(log)))).distinct
-
-    val second = (for {
-      p <- reducedPlaces.distinct
-      if endEvents(log).forall(p.contains)
-    } yield (p.diff(endEvents(log)), endEvents(log))).distinct
-
-    val YLformatted = first ++ second
-    println(YLformatted)
-    YLformatted
+  def getRelationType(firstEvent: Char, secondEvent: Char): String = {
+    val rowIndex: Int = footprint.matrixEventToIndex(firstEvent)
+    val colIndex: Int = footprint.matrixEventToIndex(secondEvent)
+    footprint.matrix(rowIndex)(colIndex)
   }
 
-  //6 step: set of places
-  // get the start place i and the final state o
-  val allTransitions = getTransitions()
-  val inPlace = Place(List[Char](), initialEvents(log))
-  val outPlace = Place(endEvents(log), List[Char]())
-  var places = new ListBuffer[Place]()
-  places += inPlace
-  for (p <- allTransitions) {
-    places += Place(p._1, p._2)
+  //check relations
+  def checkIfConnected(firstEvent: List[Char]) = {
+    val t = for {
+      i ← 0 until firstEvent.size
+      n1 = firstEvent(i)
+      j ← 0 until firstEvent.size
+      n2 = firstEvent(j)
+    } yield getRelationType(n1, n2) != "#"
+    t.distinct
   }
-  places += outPlace
-  val placeList = places.toList
-  //println(placeList)
+
+  /*firstEvent   - a
+check if all a activities in A have independent relations*/
+  def areAConnected(inEvent: List[List[Char]]) = {
+    val t = for {
+      a1 <- inEvent
+      // a2 <- outEvent
+      if (!checkIfConnected(a1).contains(true))
+    } yield a1
+    t.distinct
+  }
+
+  /*secondEvent - b check if all b activities in B have independent relations*/
+  def areBConnected(outEvent: List[List[Char]]) = {
+    val t = for {
+      a1 <- outEvent
+      if (!checkIfConnected(a1).contains(true))
+    } yield a1
+    t.distinct
+  }
+
+  // println(areAConnected(inputEventsSuperList))
+  // println(areBConnected(outputEventsSuperList))
+
+  // For every a in A and b in B => a > b in relations
+  def checkIfABConnected(inEvent: List[Char], outEvent: List[Char]) = {
+    val t = for {
+      a <- inEvent
+      b <- outEvent
+    } yield getRelationType(a, b) == "->"
+    t.distinct
+  }
+
+  def findABPairs(inEvents: List[List[Char]], outEvents: List[List[Char]]) = {
+    val x = for {
+      a <- inEvents
+      b <- outEvents
+      if (!checkIfABConnected(a, b).contains(false))
+    } yield (a, b)
+    x.distinct
+  }
+
+  //println(findABPairs(areAConnected(inputEventsSuperList), areBConnected(outputEventsSuperList)))
 
   //step7: set of arcs
-  def mapPlace(p: Place) = {
+ /* def mapPlace(p: Place) = {
     if (!p.inEvent.isEmpty || !p.outEvent.isEmpty) {
       val in = for {
         n <- p.inEvent
@@ -113,6 +136,7 @@ println("XL: " + transitions.distinct)
       in ++ out
     }
   }
-  val FL = placeList.map(x => mapPlace(x))
-  //println(FL)
+
+  val FL = placeList.map(x => mapPlace(x))*/
+
 }

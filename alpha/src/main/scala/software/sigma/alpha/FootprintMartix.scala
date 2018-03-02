@@ -51,7 +51,7 @@ class FootprintMartix(seenEvents: List[Char], log: List[String]) {
       n2 = seenEvents(j)
       if !df.contains((n1, n2)) && !df.contains((n2, n1)) && n1 != n2
     } yield (n1, n2)
-    test.toList
+    test.distinct.toList
   }
 
 
