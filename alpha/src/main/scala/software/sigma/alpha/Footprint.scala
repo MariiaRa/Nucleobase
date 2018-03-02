@@ -1,13 +1,9 @@
 package software.sigma.alpha
 
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
-
 object Footprint extends App {
 
   val eventLog = List("abcd", "acbd", "aed")
   //val eventLog = List("abd", "acd")
-
 
   val traces = for {
     trace <- eventLog
@@ -25,62 +21,124 @@ object Footprint extends App {
   println("Seen events: " + seenEvents)
 
   // var matrixeventToIndex = collection.mutable.Map[String, String]()
-  val footprint = Array.ofDim[String](seenEvents.length, seenEvents.length)
-  val matrixeventToIndex = seenEvents.zipWithIndex.toMap
+  //val footprint = Array.ofDim[String](seenEvents.length, seenEvents.length)
+ // val matrixeventToIndex = seenEvents.zipWithIndex.toMap
 
-  println(matrixeventToIndex)
+ // println(matrixeventToIndex)
 
 
-  for (x <- 0 until seenEvents.length; y <- 0 until seenEvents.length) {
+ /* for (x <- 0 until seenEvents.length; y <- 0 until seenEvents.length) {
     footprint(x)(y) = "#"
-  }
+  }*/
 
-  /* for (i <- 0 until footprint.length) {
-     var line: String = ""
-     for (j <- 0 until footprint(0).length) {
-       line += footprint(i)(j)+" "
-     }
-     println(line)
-   }*/
+  val footprint = new FootprintMartix(List('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), List("ABDEFH", "ACGH", "ABEDFH"))
 
-  val directFollowers: List[(Char, Char)] = List(('a', 'b'), ('b', 'c'), ('c', 'd'), ('a', 'c'), ('c', 'b'), ('b', 'd'), ('a', 'e'), ('e', 'd'))
-  val causality: List[(Char, Char)] = List(('a', 'b'), ('a', 'c'), ('a', 'e'), ('b', 'd'), ('c', 'd'), ('e', 'd'))
-  val parallels: List[(Char, Char)] = List(('b', 'c'), ('c', 'b'))
-  val choices: List[(Char, Char)] = List(('a', 'd'), ('b', 'e'), ('c', 'e'))
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e'), List("abcd", "acbd", "aed"))
 
-  for {pair1 <- causality
-       pair2 <- parallels
-       pair3 <- choices
-       pair4 <- directFollowers
-  } {
-    // footprint(matrixeventToIndex(pair4._1))(matrixeventToIndex(pair4._2)) = ">"
-     //  footprint(matrixeventToIndex(pair4._2))(matrixeventToIndex(pair4._1)) = "<"
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd'), List("abd", "acd"))
+ // val footprint = new FootprintMartix(List('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'), List("ABCEFGH", "ABCEGFH", "ADEGFH", "ADEFGH"))
 
-    footprint(matrixeventToIndex(pair1._1))(matrixeventToIndex(pair1._2)) = "->"
-    footprint(matrixeventToIndex(pair1._2))(matrixeventToIndex(pair1._1)) = "<-"
-    // footprint(matrixeventToIndex(pair1._1))(matrixeventToIndex(pair1._2)) = " <- "
-    //  footprint(matrixeventToIndex(pair1._2))(matrixeventToIndex(pair1._1)) = " <- "
-    footprint(matrixeventToIndex(pair2._1))(matrixeventToIndex(pair2._2)) = "||"
-    footprint(matrixeventToIndex(pair2._2))(matrixeventToIndex(pair2._1)) = "||"
-    footprint(matrixeventToIndex(pair3._1))(matrixeventToIndex(pair3._2)) = "#"
-  }
+  //val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e', 'f'), List("abef", "abecdbf", "abcedbf","abcdebf", "aebcdbf" ))
 
-  println("\nFootprint matrix:")
-  for (i <- 0 until footprint.length) {
-    var line: String = ""
-    for (j <- 0 until footprint(0).length) {
-      line += footprint(i)(j) + " "
-    }
-    println(line)
-  }
+  val directFollowers = footprint.getDirectFollowers
+  println("D "+directFollowers)
+  val causality = footprint.getCausalities(directFollowers)
+  println("C " + causality)
+  val parallels = footprint.getParallelism(directFollowers)
+  println("P " +parallels)
+  val choices = footprint.getExclusiveness(directFollowers)
+  println("Ch "+ choices)
+  footprint.buildRelations(causality,parallels,choices, directFollowers)
+val xxx = (directFollowers ::: causality).diff(parallels)
+  println((directFollowers ::: causality).diff(parallels))
+
+
+  val inputEvents = (for{
+    a <- xxx
+  } yield a._1).distinct
+  println("\nInput events "+inputEvents)
+
+  val outputEvents = (for{
+    a <- xxx
+  } yield a._2).distinct
+println("\nOutput events "+outputEvents)
+  /*
+   * (A,B), A = first, B = second
+*/
+  // For every a1,a2 in A => a1#a2
+  val inputEventsSuperList = (1 until  inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
+  println(inputEventsSuperList)
+
+  val outputEventsSuperList = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
+  println(outputEventsSuperList)
+
 
   def getRelationType(firstEvent: Char, secondEvent: Char): String = {
-    val rowIndex: Int = matrixeventToIndex(firstEvent)
-    val colIndex: Int = matrixeventToIndex(secondEvent)
-    footprint(rowIndex)(colIndex)
+    val rowIndex: Int = footprint.matrixEventToIndex(firstEvent)
+    val colIndex: Int = footprint.matrixEventToIndex(secondEvent)
+    footprint.matrix(rowIndex)(colIndex)
   }
 
+
+  def checkIfConnected(firstEvent: List[Char]) = {
+     val t = for {
+      i ← 0 until firstEvent.size
+      n1 = firstEvent(i)
+      j ← 0 until firstEvent.size
+      n2 = firstEvent(j)
+    } yield getRelationType(n1, n2) != "#"
+t.distinct
+  }
+/*  println(checkIfConnected(List('b', 'c', 'e')))
+  println(checkIfConnected(List('b','e')))*/
+
+
   /*firstEvent   - a
+check if all  a activities in A have independent relations*/
+  def areAConnected(inEvent: List[List[Char]]) = {
+val t = for {
+  a1 <- inEvent
+ // a2 <- outEvent
+  if (!checkIfConnected(a1).contains(true))
+} yield a1
+    t.distinct
+        }
+  /*secondEvent   - b
+check if all b activities in B have independent relations*/
+  def areBConnected(outEvent: List[List[Char]]) = {
+    val t = for {
+      a1 <- outEvent
+     if (!checkIfConnected(a1).contains(true))
+    } yield a1
+    t.distinct
+  }
+
+  println(areAConnected(inputEventsSuperList))
+  println(areBConnected(outputEventsSuperList))
+
+
+  def checkIfABConnected(inEvent: List[Char], outEvent: List[Char]) = {
+    val t = for {
+      a <- inEvent
+      b <- outEvent
+       } yield getRelationType(a, b) == "->"
+    t.distinct
+     }
+
+
+  def findABPairs(inEvents: List[List[Char]], outEvents: List[List[Char]]) = {
+    val x = for {
+      a <- inEvents
+      b <- outEvents
+      if (!checkIfABConnected(a, b).contains(false))
+    } yield (a, b)
+    x
+  }
+
+println(findABPairs(areAConnected(inputEventsSuperList), areBConnected(outputEventsSuperList)))
+
+
+ /* /*firstEvent   - a
   secondEvent - b
   returns false if a # b, otherwise true*/
   def areConnected(firstEvent: Char, secondEvent: Char) = getRelationType(firstEvent, secondEvent) != "#"
@@ -103,6 +161,11 @@ val inputEvents = (for{
    * (A,B), A = first, B = second
 */
     // For every a1,a2 in A => a1#a2
+    val testSubSets1 = (1 until  inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
+  println(testSubSets1)
+
+
+
 
   // For every b1, b2 in B => b1#b2
 
@@ -111,8 +174,13 @@ val inputEvents = (for{
 
 
 
-val testSubSets1 = (1 until  inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
-  println(testSubSets1)
+
+
+
+
+
+
+
 val testSubSets2 = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
   println(testSubSets2)
 
@@ -230,7 +298,7 @@ places +=outPlace
   }
 
   val FL = placeList.map( x => mapPlace(x))
-println(FL)
+println(FL)*/
 }
 
 

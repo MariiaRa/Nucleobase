@@ -55,7 +55,16 @@ class FootprintMartix(seenEvents: List[Char], log: List[String]) {
   }
 
 
-  def buildRelations(causality: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)]): Unit = {
+  def buildRelations(causality: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)],directFollowers: List[(Char, Char)] ): Unit = {
+
+    if (parallels.nonEmpty) {
+      for {
+        pair4 <- directFollowers
+      } {
+        matrix(matrixEventToIndex(pair4._1))(matrixEventToIndex(pair4._2)) = ">"
+        matrix(matrixEventToIndex(pair4._2))(matrixEventToIndex(pair4._1)) = "<"
+      }
+    }
 
     if (causality.nonEmpty) {
       for {
@@ -74,6 +83,7 @@ class FootprintMartix(seenEvents: List[Char], log: List[String]) {
         matrix(matrixEventToIndex(pair2._1))(matrixEventToIndex(pair2._2)) = "||"
       }
     }
+
 
     println("\nFootprint matrix:")
     for (i <- 0 until matrix.length) {

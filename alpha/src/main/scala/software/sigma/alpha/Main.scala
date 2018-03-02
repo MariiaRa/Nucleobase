@@ -2,7 +2,7 @@ package software.sigma.alpha
 
 object Main extends App {
 
-  val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e'), List("abcd", "acbd", "aed"))
+  val footprint = new FootprintMartix(List('a', 'b', 'c', 'd', 'e', 'f'), List("abef", "abecdbf", "abcedbf", "abcdebf", "aebcdbf"))
 
   val directFollowers = footprint.getDirectFollowers
   println(directFollowers)
@@ -12,8 +12,8 @@ object Main extends App {
   println(parallels)
   val choices = footprint.getExclusiveness(directFollowers)
   println(choices)
-  footprint.buildRelations(causality,parallels,choices)
+  footprint.buildRelations(causality,parallels,choices, directFollowers)
 
-  val alpha = new AlphaAlgorithm(List("abcd", "acbd", "aed"))
+  val alpha = new AlphaAlgorithm(List("abef", "abecdbf", "abcedbf", "abcdebf", "aebcdbf"))
 
 }
