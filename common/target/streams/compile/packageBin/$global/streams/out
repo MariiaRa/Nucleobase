@@ -1,0 +1,29 @@
+[0m[[0m[0minfo[0m] [0m[0mPackaging /home/maria/sbt-projects/ActiveMQTest/common/target/common-0.1.0-SNAPSHOT.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide$Guanine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide$Guanine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/Subscriber$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/Subscriber$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide$Thymine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide$Thymine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/DNAGenerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/DNAGenerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/Publisher.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/Publisher.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide$Cytosine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide$Cytosine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/Subscriber.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/Subscriber.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	ua/com/entity/Nucleotide$Adenine$.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/maria/sbt-projects/ActiveMQTest/common/target/classes/ua/com/entity/Nucleotide$Adenine$.class[0m
+[0m[[0m[0minfo[0m] [0m[0mDone packaging.[0m
