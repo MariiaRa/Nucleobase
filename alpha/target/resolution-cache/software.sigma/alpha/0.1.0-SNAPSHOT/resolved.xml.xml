@@ -4,7 +4,7 @@
 		module="alpha"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20180302132705"
+		publication="20180305184932"
 	>
 		<description>
 		alpha
@@ -34,5 +34,12 @@
 		<dependency org="org.scala-lang" name="scala-library" rev="2.12.4" conf="scala-tool->default,optional(default);compile->default(compile)"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.16" conf="compile->default(compile)"/>
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.16" conf="compile->default(compile)"/>
+		<dependency org="ch.qos.logback" name="logback-classic" rev="1.2.3" conf="compile->default(compile)"/>
+		<dependency org="org.scalatest" name="scalatest_2.10" rev="2.0" conf="test->default(compile)"/>
+		<dependency org="io.spray" name="spray-json_2.12" rev="1.3.3" conf="compile->default(compile)"/>
+		<dependency org="org.apache.activemq" name="activemq-client" rev="5.14.5" conf="compile->default(compile)">
+			<exclude org="org.apache.geronimo.specs" module="geronimo-jms_1.1_spec" name="*" type="*" ext="*" conf="" matcher="exact"/>
+		</dependency>
+		<dependency org="javax" name="javaee-api" rev="7.0" conf="compile->default(compile)"/>
 	</dependencies>
 </ivy-module>

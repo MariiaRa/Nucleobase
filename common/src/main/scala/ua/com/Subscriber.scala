@@ -49,7 +49,7 @@ class Subscriber(url: String, topicName: String, ID: String) {
         message.acknowledge
       }
     }
-    println("DNA String: " + sb.toString())
+   // println("DNA String: " + sb.toString())
     sb.toString()
   }
   // val list = new mutable.MutableList[String]

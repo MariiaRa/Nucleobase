@@ -5,7 +5,8 @@ val `nucleobase` = project.in(file("."))
   .aggregate(`common`,
              `DNAProducer`,
              `DNAMutator`,
-             `DNAValidator`)
+             `DNAValidator`,
+    `alpha`)
 
 // modules
 //common module for JMS connection, producers and consumers
@@ -29,9 +30,12 @@ lazy val `DNAMutator` = project.enablePlugins(ProjectPlugin).
   )
 //consumer/validator
 lazy val `DNAValidator` = project.enablePlugins(ProjectPlugin).
-  dependsOn(`common`).
+  dependsOn(`common`, `alpha`).
   settings(
     mainClass in Compile := Some("software.sigma.nucleobase.DNAValidator")
   )
 //alpha
-lazy val `alpha` = project.enablePlugins(ProjectPlugin)
+lazy val `alpha` = project.enablePlugins(ProjectPlugin).
+  settings(
+    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms)
+  )

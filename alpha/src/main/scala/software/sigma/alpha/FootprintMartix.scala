@@ -88,13 +88,13 @@ class FootprintMartix(eventLog: List[String]) {
       }
     }
 
-    println("Footprint matrix:")
+ /*   println("Footprint matrix:")
     for (i <- 0 until matrix.length) {
       var line: String = ""
       for (j <- 0 until matrix(0).length) {
         line += matrix(i)(j) + " "
       }
       println(line)
-    }
+    }*/
   }
 }

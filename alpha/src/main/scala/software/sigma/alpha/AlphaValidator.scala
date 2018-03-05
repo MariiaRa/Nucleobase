@@ -14,7 +14,7 @@ class AlphaValidator {
     else false
   }
 
-  def calculateRate(logs: List[List[String]], correctModel: List[Place]): Double = {
+  def calculateRate(logs: Stream[List[String]], correctModel: List[Place]): Double = {
     var numberOfCorrectLog: Double = 0
     var numberOfInCorrectLog: Double = 0
     val MAX_WAIT = 1000
@@ -25,8 +25,13 @@ class AlphaValidator {
         else numberOfInCorrectLog += 1
       }
     }
-  // println(numberOfCorrectLog)
-   // println(numberOfInCorrectLog)
-    numberOfInCorrectLog / numberOfCorrectLog
+  println("correct"+numberOfCorrectLog)
+  println("incorrect"+ numberOfInCorrectLog)
+   val rate: Double = numberOfInCorrectLog / numberOfCorrectLog
+    rate
   }
+
+
+
+
 }

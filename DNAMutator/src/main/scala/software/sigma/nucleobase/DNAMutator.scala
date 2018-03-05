@@ -10,6 +10,6 @@ object DNAMutator extends App {
   val NucleoStream: Stream[Nucleotide] = generator.mutation(getRandomNucleo)
   val publisher = new Publisher("tcp://localhost:61616", "DNA", "DNAMutator")
 
-  NucleoStream take 200 foreach (n => publisher.send(n.nucleo))
+  NucleoStream take 100 foreach (n => publisher.send(n.nucleo))
   publisher.closeConnection()
 }

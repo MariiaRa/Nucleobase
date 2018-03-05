@@ -4,7 +4,7 @@
 		module="dnavalidator"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20180302132706"
+		publication="20180305185410"
 	>
 		<description>
 		DNAValidator
@@ -33,6 +33,7 @@
 		<dependency org="org.scala-lang" name="scala-compiler" rev="2.12.4" conf="scala-tool->default,optional(default)"/>
 		<dependency org="org.scala-lang" name="scala-library" rev="2.12.4" conf="scala-tool->default,optional(default);compile->default(compile)"/>
 		<dependency org="software.sigma" name="common" rev="0.1.0-SNAPSHOT" conf="compile->default(compile)"/>
+		<dependency org="software.sigma" name="alpha" rev="0.1.0-SNAPSHOT" conf="compile->default(compile)"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.7.16" conf="compile->default(compile)"/>
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.16" conf="compile->default(compile)"/>
 	</dependencies>

@@ -9,10 +9,11 @@ object Main extends App {
   }
 
   val firstlog = createLog("GCATTACGATATATCGCGTACGATATCGCGATTAATATATTAATATCGCGGCGCGCGCATTATAATTAGCCGGCTACGATTATAGCTACGATATATGCTA")
+  val secondLog = createLog("CGATGCTACGTAGCATCGTAATATCGTATACGCGGCCGTAGCATATTAATCGATATTACGTACGATCGGCCGCGGCGCGCATGCGCCGATGCGCCGGCCG")
   val validator = new AlphaValidator
   val correctModel = validator.buildCorrectModel(firstlog)
   println(correctModel)
-
+println(validator.buildCorrectModel(secondLog))
 
 }
 

@@ -21,15 +21,13 @@ class AlphaForBasePair(eventLog: List[String]) {
   //2 step: get Ti - set of start activities, first element in each trace in W
   def initialEvents(eventLog: List[String]): List[Char] = {
     val ti = for (pair <- eventLog) yield pair(0)
-    println("TI "+ti.distinct)
-    ti.distinct
+    ti.distinct.sortWith(_ < _)
   }
 
   //3 step: get To - set of end activities, last element in each trace in W
   def endEvents(eventLog: List[String]): List[Char] = {
     val to = for (pair <- eventLog) yield pair(pair.length - 1)
-    println("TO "+to.distinct)
-    to.distinct
+    to.distinct.sortWith(_ < _)
   }
 
   def makeXL(): List[(List[Char], List[Char])] = {
