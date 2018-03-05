@@ -1,21 +1,27 @@
 package software.sigma.alpha
 
-class FootprintMartix(seenEvents: List[Char], log: List[String]) {
+class FootprintMartix(eventLog: List[String]) {
+
+  val seenEvents = (for {
+    trace <- eventLog
+    event <- trace
+  } yield event).distinct
 
   val matrix = Array.ofDim[String](seenEvents.length, seenEvents.length)
   //fill the matrix of relations
   for (x <- 0 until seenEvents.length; y <- 0 until seenEvents.length) {
     matrix(x)(y) = "#"
   }
+
   val matrixEventToIndex: Map[Char, Int] = seenEvents.zipWithIndex.toMap
 
-  println(matrixEventToIndex)
+  //println(matrixEventToIndex)
 
   //Find all relations
   //Direct follower : a > bw are in execution seqeunce iff b directly follows a
-  def getDirectFollowers = {
+  def getDirectFollowers() = {
     val followers = for {
-      pair <- log
+      pair <- eventLog
       (event, index) <- pair.zipWithIndex
       if index != pair.length - 1
     } yield (event, pair(index + 1))
@@ -54,9 +60,7 @@ class FootprintMartix(seenEvents: List[Char], log: List[String]) {
     test.distinct.toList
   }
 
-
-  def buildRelations(causality: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)],directFollowers: List[(Char, Char)] ): Unit = {
-
+  def buildRelations(causality: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)], directFollowers: List[(Char, Char)]): Unit = {
     if (parallels.nonEmpty) {
       for {
         pair4 <- directFollowers
@@ -84,8 +88,7 @@ class FootprintMartix(seenEvents: List[Char], log: List[String]) {
       }
     }
 
-
-    println("\nFootprint matrix:")
+    println("Footprint matrix:")
     for (i <- 0 until matrix.length) {
       var line: String = ""
       for (j <- 0 until matrix(0).length) {

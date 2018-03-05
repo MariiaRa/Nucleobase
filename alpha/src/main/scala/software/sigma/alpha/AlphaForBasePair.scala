@@ -2,15 +2,13 @@ package software.sigma.alpha
 
 import scala.collection.mutable.ListBuffer
 
-class AlphaAlgorithm(eventLog: List[String]) {
-
+class AlphaForBasePair(eventLog: List[String]) {
   private val footprint = new FootprintMartix(eventLog)
   private val directFollowers = footprint.getDirectFollowers
-  private val causality = footprint.getCausalities(directFollowers)
-  private val parallels = footprint.getParallelism(directFollowers)
-  private val choices = footprint.getExclusiveness(directFollowers)
+  private val causality = directFollowers
+  private val parallels = List.empty
+  private val choices = List.empty
   footprint.buildRelations(causality, parallels, choices, directFollowers)
-
   //1 step: get Tw - set of distinct activities in W (workflow log)
   //gather all seen events from log
   private def getAllSeenEvents(eventLog: List[String]): List[Char] = {
@@ -21,29 +19,29 @@ class AlphaAlgorithm(eventLog: List[String]) {
   }
 
   //2 step: get Ti - set of start activities, first element in each trace in W
-def initialEvents(eventLog: List[String]): List[Char] = {
+  def initialEvents(eventLog: List[String]): List[Char] = {
     val ti = for (pair <- eventLog) yield pair(0)
-    println(ti.distinct)
-    ti.distinct.sortWith(_ < _)
+    println("TI "+ti.distinct)
+    ti.distinct
   }
 
   //3 step: get To - set of end activities, last element in each trace in W
   def endEvents(eventLog: List[String]): List[Char] = {
     val to = for (pair <- eventLog) yield pair(pair.length - 1)
-    println(to.distinct)
-    to.distinct.sortWith(_ < _)
+    println("TO "+to.distinct)
+    to.distinct
   }
 
- def makeXL(causality: List[(Char, Char)]): List[(List[Char], List[Char])] = {
+  def makeXL(): List[(List[Char], List[Char])] = {
 
     val inputEvents = causality.map(a => a._1).distinct
     val outputEvents = causality.map(a => a._2).distinct
 
     val inputEventsSuperList = (1 until inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
-    println(inputEventsSuperList)
+   // println("superset1: "+inputEventsSuperList)
 
     val outputEventsSuperList = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
-   println(outputEventsSuperList)
+    //println("superset2: "+outputEventsSuperList)
 
     def getRelationType(firstEvent: Char, secondEvent: Char): String = {
       val rowIndex: Int = footprint.matrixEventToIndex(firstEvent)
@@ -80,15 +78,17 @@ def initialEvents(eventLog: List[String]): List[Char] = {
       } yield a1
       t.distinct
     }
-    // println(areAConnected(inputEventsSuperList))
-    // println(areBConnected(outputEventsSuperList))
+  // println("Connected "+areAConnected(inputEventsSuperList))
+// println("Connected "+areBConnected(outputEventsSuperList))
 
     // For every a in A and b in B => a > b in f
     def checkIfABConnected(inEvent: List[Char], outEvent: List[Char]) = {
       val t = for {
         a <- inEvent
         b <- outEvent
-      } yield getRelationType(a, b) == "->"
+        /*relations = getRelationType(a, b)
+        if (relations == "->" || relations == "<-")*/
+      } yield getRelationType(a, b) != "#"
       t.distinct
     }
 
@@ -121,12 +121,10 @@ def initialEvents(eventLog: List[String]): List[Char] = {
 
   //6 step: set of places
   def makeYL() = {
-  val YL = findMaximal(makeXL(causality))
+    val YL = findMaximal(makeXL())
     val TI = initialEvents(eventLog)
-    println(TI)
     val inPlace = Place(List[Char](), TI)
     val TO = endEvents(eventLog)
-    println(TO)
     val outPlace = Place(TO, List[Char]())
     var places = new ListBuffer[Place]()
     places += inPlace
@@ -152,3 +150,4 @@ def initialEvents(eventLog: List[String]): List[Char] = {
 
   val FL = makeYL().map(x => mapPlace(x))
 }
+
