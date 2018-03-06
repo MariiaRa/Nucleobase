@@ -11,8 +11,9 @@ val `nucleobase` = project.in(file("."))
 // modules
 //common module for JMS connection, producers and consumers
 lazy val `common` = project.enablePlugins(ProjectPlugin).
+  dependsOn(`alpha`).
   settings(
-    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms)
+    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms, actor, akkaStrem)
   )
 //Publisher1
 lazy val `DNAProducer` = project.enablePlugins(ProjectPlugin).
@@ -37,5 +38,5 @@ lazy val `DNAValidator` = project.enablePlugins(ProjectPlugin).
 //alpha
 lazy val `alpha` = project.enablePlugins(ProjectPlugin).
   settings(
-    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms)
+    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms, actor, akkaStrem)
   )

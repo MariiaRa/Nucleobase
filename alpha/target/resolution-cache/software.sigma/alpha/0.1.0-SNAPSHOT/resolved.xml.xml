@@ -4,7 +4,7 @@
 		module="alpha"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20180305184932"
+		publication="20180306145553"
 	>
 		<description>
 		alpha
@@ -41,5 +41,7 @@
 			<exclude org="org.apache.geronimo.specs" module="geronimo-jms_1.1_spec" name="*" type="*" ext="*" conf="" matcher="exact"/>
 		</dependency>
 		<dependency org="javax" name="javaee-api" rev="7.0" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.akka" name="akka-actor_2.12" rev="2.5.9" conf="compile->default(compile)"/>
+		<dependency org="com.typesafe.akka" name="akka-stream_2.12" rev="2.5.9" conf="compile->default(compile)"/>
 	</dependencies>
 </ivy-module>

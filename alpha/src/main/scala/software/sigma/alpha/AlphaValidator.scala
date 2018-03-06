@@ -17,21 +17,15 @@ class AlphaValidator {
   def calculateRate(logs: Stream[List[String]], correctModel: List[Place]): Double = {
     var numberOfCorrectLog: Double = 0
     var numberOfInCorrectLog: Double = 0
-    val MAX_WAIT = 1000
-    val millis = System.currentTimeMillis()
-    while (System.currentTimeMillis() - millis <= MAX_WAIT) {
-      for {l <- logs} {
-        if (validate(l, correctModel)) numberOfCorrectLog += 1
-        else numberOfInCorrectLog += 1
-      }
+
+    for {l <- logs} {
+      if (validate(l, correctModel)) numberOfCorrectLog += 1
+      else numberOfInCorrectLog += 1
     }
-  println("correct"+numberOfCorrectLog)
-  println("incorrect"+ numberOfInCorrectLog)
-   val rate: Double = numberOfInCorrectLog / numberOfCorrectLog
+
+    println("correct" + numberOfCorrectLog)
+    println("incorrect" + numberOfInCorrectLog)
+    val rate: Double = numberOfInCorrectLog / numberOfCorrectLog
     rate
   }
-
-
-
-
 }

@@ -4,7 +4,7 @@
 		module="dnavalidator"
 		revision="0.1.0-SNAPSHOT"
 		status="integration"
-		publication="20180305185410"
+		publication="20180306181541"
 	>
 		<description>
 		DNAValidator
