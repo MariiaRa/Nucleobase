@@ -1,4 +1,4 @@
-package software.sigma.alpha
+package software.sigma.nucleoalpha
 
 import scala.collection.mutable.ListBuffer
 

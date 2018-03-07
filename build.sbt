@@ -1,17 +1,19 @@
 import Dependencies._
+import sbt.Keys.libraryDependencies
+
 //the parent project, aggregating the others
 val `nucleobase` = project.in(file("."))
   .enablePlugins(RootProjectPlugin)
   .aggregate(`common`,
-             `DNAProducer`,
-             `DNAMutator`,
-             `DNAValidator`,
-    `alpha`)
+    `DNAProducer`,
+    `DNAMutator`,
+    `DNAValidator`,
+    `alpha`,
+    `nucleoAlpha`)
 
 // modules
 //common module for JMS connection, producers and consumers
 lazy val `common` = project.enablePlugins(ProjectPlugin).
-  dependsOn(`alpha`).
   settings(
     libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms, actor, akkaStrem)
   )
@@ -31,12 +33,18 @@ lazy val `DNAMutator` = project.enablePlugins(ProjectPlugin).
   )
 //consumer/validator
 lazy val `DNAValidator` = project.enablePlugins(ProjectPlugin).
-  dependsOn(`common`, `alpha`).
+  dependsOn(`common`, `nucleoAlpha`).
   settings(
-    mainClass in Compile := Some("software.sigma.nucleobase.DNAValidator")
+    mainClass in Compile := Some("software.sigma.nucleobase.DNAValidator"),
+    libraryDependencies ++= Seq(actor, akkaStrem, akkaTyped)
   )
-//alpha
+//basic alpha algorithm
 lazy val `alpha` = project.enablePlugins(ProjectPlugin).
   settings(
-    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms, actor, akkaStrem)
+    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms)
+  )
+//alpha algorithm for nucleo base pair
+lazy val `nucleoAlpha` = project.enablePlugins(ProjectPlugin).
+  settings(
+    libraryDependencies ++= Seq(logback, scalatest, sprayJSON, activemq, jms)
   )

@@ -1,17 +1,18 @@
-package software.sigma.alpha
+package software.sigma.nucleoalpha
 
 import org.slf4j.LoggerFactory
 
 class AlphaValidator {
+
   private val logger = LoggerFactory.getLogger(this.getClass)
 
   def buildCorrectModel(eventLog: List[String]): List[Place] = {
-    val alp = new AlphaAlgorithm(eventLog)
+    val alp = new AlphaForBasePair(eventLog)
     alp.makeYL()
   }
 
   def validate(eventLog: List[String], correctModel: List[Place]): Boolean = {
-    val alp = new AlphaAlgorithm(eventLog)
+    val alp = new AlphaForBasePair(eventLog)
     val modelForCheck = alp.makeYL()
     if (correctModel.diff(modelForCheck).isEmpty) true
     else false

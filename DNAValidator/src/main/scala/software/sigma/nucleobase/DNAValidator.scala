@@ -4,14 +4,15 @@ import javax.jms.JMSException
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.ActorMaterializer
-import software.sigma.alpha.AlphaValidator
+import org.slf4j.LoggerFactory
+import software.sigma.nucleoalpha._
+import software.sigma.nucleobase.actors.{CalculatingActor, SchedulingActor}
 import ua.com.Subscriber
-import ua.com.entity.SchedulingActor
-
 
 object DNAValidator extends App {
+  private val logger = LoggerFactory.getLogger(this.getClass)
+
   private def createLog(input: String): List[String] = {
-    println(input.grouped(2).toList)
     input.grouped(2).toList
   }
 
@@ -27,11 +28,9 @@ object DNAValidator extends App {
     implicit val executionContext = system.dispatcher
     val rater: ActorRef = system.actorOf(CalculatingActor.props(validator, correctModel), "Rater")
     val batcher: ActorRef = system.actorOf(SchedulingActor.props(rater), "Scheduler")
-
+    logger.info("Validator has started.")
     while (true) {
-      //subscriber.processBatch()
       batcher ! subscriber.processBatch()
-      //two actors
     }
   } catch {
     case ex: JMSException => println(ex.getMessage)
