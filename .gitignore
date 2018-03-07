@@ -2,7 +2,7 @@
 /target
 /project/target
 /project/project/target
-/alpha/target/**
+/alpha/target
 /common/target
 /DNAMutator/target
 /DNAProducer/target
