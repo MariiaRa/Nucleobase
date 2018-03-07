@@ -11,7 +11,7 @@ object DNAMutator extends App {
   private val logger = LoggerFactory.getLogger(this.getClass)
   val generator = new DNAGenerator
   val nucleoStream: Stream[Nucleotide] = generator.mutation(getRandomNucleo)
-  val publisher = new Publisher("tcp://localhost:61616", "DNA", "DNAMutator")
+  val publisher = new Publisher
   logger.info("DMA mutator has started.")
   val task: TimerTask = new TimerTask() {
     def run() {

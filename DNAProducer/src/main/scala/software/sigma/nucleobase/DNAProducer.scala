@@ -13,7 +13,7 @@ object DNAProducer extends App {
     logger.info("DNA producer has started.")
     val generator = new DNAGenerator
     val DNAStream: Stream[Nucleotide] = generator.nucleo(getRandomNucleo, false)
-    val publisher = new Publisher("tcp://localhost:61616", "DNA", "DNAProducer")
+    val publisher = new Publisher
 
     while (true) {
       DNAStream take 1000 foreach (n => publisher.send(n.nucleo))
