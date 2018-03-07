@@ -2,7 +2,11 @@
 /target
 /project/target
 /project/project/target
-/**/target/classes/**
-/**/target/resolution-cache/**
-/**/target/streams/**
+/alpha/target/**
+/common/target/**
+/DNAMutator/target/**
+/DNAProducer/target/**
+/DNAValidator/target/**
+/nucleoAlpha/target/**
+/src/**
 
