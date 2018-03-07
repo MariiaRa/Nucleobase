@@ -18,7 +18,7 @@ object DNAValidator extends App {
 
   try {
     val subscriber = new Subscriber("tcp://localhost:61616", "DNA", "DNAValidator")
-    val validator = new AlphaValidator
+    val validator = new AlphaNucleoValidator
     val firstLog = createLog(subscriber.processBatch())
     val correctModel = validator.buildCorrectModel(firstLog)
 

@@ -15,8 +15,6 @@ class FootprintMartix(eventLog: List[String]) {
 
   val matrixEventToIndex: Map[Char, Int] = seenEvents.zipWithIndex.toMap
 
-  //println(matrixEventToIndex)
-
   //Find all relations
   //Direct follower : a > bw are in execution seqeunce iff b directly follows a
   def getDirectFollowers() = {

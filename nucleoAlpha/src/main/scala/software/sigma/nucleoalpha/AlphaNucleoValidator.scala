@@ -2,7 +2,7 @@ package software.sigma.nucleoalpha
 
 import org.slf4j.LoggerFactory
 
-class AlphaValidator {
+class AlphaNucleoValidator {
 
   private val logger = LoggerFactory.getLogger(this.getClass)
 
@@ -26,8 +26,8 @@ class AlphaValidator {
       if (validate(l, correctModel)) numberOfCorrectLog += 1
       else numberOfInCorrectLog += 1
     }
-    logger.info(s"Number of correct DNA string: $numberOfCorrectLog")
-    logger.info(s"Number of mutated DNA string: $numberOfInCorrectLog")
+    logger.info(s"Number of correct DNA strings: $numberOfCorrectLog")
+    logger.info(s"Number of mutated DNA strings: $numberOfInCorrectLog")
     val rate: Double = numberOfInCorrectLog / numberOfCorrectLog
     rate
   }

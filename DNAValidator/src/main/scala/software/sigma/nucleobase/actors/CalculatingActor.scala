@@ -5,10 +5,10 @@ import software.sigma.nucleoalpha._
 import software.sigma.nucleobase.actors.SchedulingActor.DNALog
 
 object CalculatingActor {
-  def props(validator: AlphaValidator, correctModel: List[Place]): Props = Props(new CalculatingActor(validator, correctModel))
+  def props(validator: AlphaNucleoValidator, correctModel: List[Place]): Props = Props(new CalculatingActor(validator, correctModel))
 }
 
-class CalculatingActor(validator: AlphaValidator, correctModel: List[Place]) extends Actor with ActorLogging {
+class CalculatingActor(validator: AlphaNucleoValidator, correctModel: List[Place]) extends Actor with ActorLogging {
   override def receive: Receive = {
     case logs: DNALog =>
       val rate = validator.calculateRate(logs.log, correctModel)

@@ -18,6 +18,7 @@ object DNAProducer extends App {
     while (true) {
       DNAStream take 1000 foreach (n => publisher.send(n.nucleo))
     }
+
     publisher.closeConnection()
   } catch {
     case ex: JMSException => println(ex.getMessage)
