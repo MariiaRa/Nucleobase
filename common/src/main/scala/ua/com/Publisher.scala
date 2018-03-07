@@ -14,11 +14,10 @@ class Publisher(url: String, topicName: String, ID: String) {
   val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
   val topic: Topic = session.createTopic(topicName)
   val publisher = session.createProducer(topic)
-  publisher.setDeliveryMode(DeliveryMode.NON_PERSISTENT)
+  publisher.setDeliveryMode(DeliveryMode.PERSISTENT)//
 
-  def send(a: String): Unit = {
+  def send(a: String): Unit = { //if  not null => scheduling
     val textMessage = session.createTextMessage(a)
-    println("Sending message...")
     publisher.send(textMessage)
     println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination + " at " + textMessage.getJMSTimestamp)
   }

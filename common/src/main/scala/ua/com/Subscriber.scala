@@ -11,7 +11,7 @@ class Subscriber(url: String, topicName: String, ID: String) {
   connection.setClientID(ID)
   connection.start()
 
-  val session: Session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
+  val session: Session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE)
   val topic: Topic = session.createTopic(topicName)
   val subscriber: TopicSubscriber = session.createDurableSubscriber(topic, "Durable_Subscriber")
 
@@ -43,16 +43,14 @@ class Subscriber(url: String, topicName: String, ID: String) {
       val message: Message = subscriber.receiveNoWait()
       if (message.isInstanceOf[TextMessage]) {
         val textMessage: TextMessage = message.asInstanceOf[TextMessage]
-        // println("Message received from producer: " + textMessage.getText)
         sb.append(textMessage.getText)
         // Once we have successfully processed the message, send an acknowledge back to ActiveMQ
         message.acknowledge
       }
     }
-   println("DNA String: " + sb.toString())
+  //println("DNA String: " + sb.toString())
     sb.toString()
   }
-  // val list = new mutable.MutableList[String]
   def closeConnection(): Unit = {
     connection.close()
   }
