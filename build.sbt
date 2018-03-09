@@ -36,7 +36,7 @@ lazy val `DNAValidator` = project.enablePlugins(ProjectPlugin).
   dependsOn(`common`, `nucleoAlpha`).
   settings(
     mainClass in Compile := Some("software.sigma.nucleobase.DNAValidator"),
-    libraryDependencies ++= Seq(actor, akkaStrem, akkaTyped)
+    libraryDependencies ++= Seq(actor, akkaStrem, akkaHTTP, akkaJSON)
   )
 //basic alpha algorithm
 lazy val `alpha` = project.enablePlugins(ProjectPlugin).
