@@ -1,17 +1,32 @@
 package software.sigma.nucleobase.actors
 
-import akka.actor.{Actor, ActorLogging, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import software.sigma.nucleoalpha._
 import software.sigma.nucleobase.actors.SchedulingActor.DNALog
+import software.sigma.nucleobase.entity.Rate
 
 object CalculatingActor {
-  def props(validator: AlphaNucleoValidator, correctModel: List[Place]): Props = Props(new CalculatingActor(validator, correctModel))
+
+  case object RateRequest
+
+  def props(validator: AlphaNucleoValidator, correctModel: List[Place], coordinator: ActorRef): Props = Props(new CalculatingActor(validator, correctModel, coordinator: ActorRef))
 }
 
-class CalculatingActor(validator: AlphaNucleoValidator, correctModel: List[Place]) extends Actor with ActorLogging {
+class CalculatingActor(validator: AlphaNucleoValidator, correctModel: List[Place], coordinator: ActorRef) extends Actor with ActorLogging {
+
+  import CalculatingActor._
+
+  var currentRate: Double = 0
+
   override def receive: Receive = {
     case logs: DNALog =>
       val rate = validator.calculateRate(logs.log, correctModel)
       log.info(s"Rate of mutations: $rate")
+      coordinator ! Rate(rate)
+      currentRate = rate
+    case RateRequest =>
+      log.info("Received request for rate")
+      log.info(s"Current of mutations: $currentRate")
+      sender() ! Some(Rate(currentRate))
   }
 }
