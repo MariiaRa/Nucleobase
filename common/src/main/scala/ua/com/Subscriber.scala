@@ -48,10 +48,24 @@ class Subscriber(url: String, topicName: String, ID: String) {
         message.acknowledge
       }
     }
-  //println("DNA String: " + sb.toString())
+    //println("DNA String: " + sb.toString())
     sb.toString()
   }
+
+  def getRate(): Boolean = {
+    var check = false
+    val message: Message = subscriber.receiveNoWait()
+    if (message.isInstanceOf[TextMessage] && message != null) {
+      val textMessage: TextMessage = message.asInstanceOf[TextMessage]
+      println("Received message: "+textMessage.getText())
+      if (textMessage.getText() == "Stop!") check = true
+      message.acknowledge
+    }
+    check
+  }
+
   def closeConnection(): Unit = {
     connection.close()
   }
+
 }
