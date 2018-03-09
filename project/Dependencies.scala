@@ -9,7 +9,7 @@ object Dependencies {
   val jms  = "javax" % "javaee-api" % "7.0"
   val actor = "com.typesafe.akka" %% "akka-actor" % "2.5.9"
   val akkaStrem = "com.typesafe.akka" %% "akka-stream" % "2.5.9"
-  val akkaTyped = "com.typesafe.akka" %% "akka-typed" % "2.5.6"
+  val akkaHTTP = "com.typesafe.akka" %% "akka-http" % "10.0.11"
   val config = "com.typesafe" % "config" % "1.3.2"
+  val akkaJSON = "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.0-RC1"
   }
-
