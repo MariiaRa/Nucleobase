@@ -2,6 +2,7 @@ package software.sigma.nucleobase
 
 import java.util.{Timer, TimerTask}
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.slf4j.LoggerFactory
 import ua.com.Publisher
 import ua.com.entity.{DNAGenerator, Nucleotide}
@@ -11,11 +12,15 @@ object DNAMutator extends App {
   private val logger = LoggerFactory.getLogger(this.getClass)
   val generator = new DNAGenerator
   val nucleoStream: Stream[Nucleotide] = generator.mutation(getRandomNucleo)
-  val publisher = new Publisher
+  val myConf: Config = ConfigFactory.load()
+  val ID: String = myConf.getString("DNAMutator.ID")
+  val url: String = myConf.getString("DNAMutator.url")
+  val topicName: String = myConf.getString("DNAMutator.topicName")
+  val publisher = new Publisher(url, topicName, ID)
   logger.info("DMA mutator has started.")
   val task: TimerTask = new TimerTask() {
     def run() {
-      nucleoStream take 10 foreach (n => publisher.send(n.nucleo))
+      nucleoStream take 50 foreach (n => publisher.send(n.nucleo))
     }
   }
   val timer = new Timer()
@@ -23,5 +28,5 @@ object DNAMutator extends App {
   val intevalPeriod = 5 * 1000
   // schedules the task to be run in an interval
   timer.scheduleAtFixedRate(task, delay, intevalPeriod)
- // publisher.closeConnection()
+  // publisher.closeConnection()
 }
