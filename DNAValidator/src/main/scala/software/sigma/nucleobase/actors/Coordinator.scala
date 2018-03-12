@@ -25,7 +25,9 @@ class Coordinator extends Actor with ActorLogging {
     case r: Rate =>
      // logger.info("DNA producer has started.")
       if (r.rate > 0.01) {
-        regulator.send("Stop!")
+        regulator.send("Stop")
+      } else {
+        regulator.send("Start")
       }
   }
 }
