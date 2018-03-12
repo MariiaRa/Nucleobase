@@ -14,16 +14,27 @@ class Publisher(url: String, topicName: String, ID: String) {
 
   val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
   val topic: Topic = session.createTopic(topicName)
+
   val publisher = session.createProducer(topic)
   publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
 
   def send(a: String): Unit = {
-    val textMessage = session.createTextMessage(a)
-    publisher.send(textMessage)
-    println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination)
+    try {
+      val textMessage = session.createTextMessage(a)
+      publisher.send(textMessage)
+      println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination)
+    } catch {
+      case ex: IllegalStateException => {
+        val publisher = session.createProducer(topic)
+        publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
+        val textMessage = session.createTextMessage(a)
+        publisher.send(textMessage)
+        println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination)
+      }
+    }
   }
 
   def closeConnection(): Unit = {
-    connection.close()
+    publisher.close()
   }
 }
