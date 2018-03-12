@@ -1,5 +1,6 @@
 package software.sigma.nucleobase.actors
 
+import java.util.{Timer, TimerTask}
 import akka.actor.{Actor, ActorLogging, Props, Timers}
 import com.typesafe.config.{Config, ConfigFactory}
 import ua.com.Publisher
@@ -32,21 +33,20 @@ class Mutator extends Actor with ActorLogging with Timers {
   val publisher = new Publisher(mutatorUrl, mutatorTopicName, mutatorID)
 
 
-  //timers.startPeriodicTimer(Key, Publish, 10.second)
-
-  /*  val task: TimerTask = new TimerTask() {
-      def run() {
-        nucleoStream take 50 foreach (n => publisher.send(n.nucleo))
-      }
+  val task: TimerTask = new TimerTask() {
+    def run() {
+      nucleoStream take 50 foreach (n => publisher.send(n.nucleo))
     }
-    val timer = new Timer()
-    val delay = 0
-    val intevalPeriod = 5 * 1000
-    timer.scheduleAtFixedRate(task, delay, intevalPeriod)*/
+  }
+  val timer = new Timer()
+  val delay = 0
+  val intevalPeriod = 15 * 1000
+
+  timer.scheduleAtFixedRate(task, delay, intevalPeriod)
 
   override def receive: Receive = {
-    case Publish => log.info("Publishing..."); nucleoStream take 50 foreach (n => publisher.send(n.nucleo))
-    case Stop => log.info("Stopping..."); publisher.closeConnection()
+    case Publish => log.info("Publishing..."); timer.scheduleAtFixedRate(task, delay, intevalPeriod)
+    case Stop => log.info("Stopping..."); timer.cancel(); timer.purge();
     case StartActor => log.info("Starting..."); self ! Publish
   }
 }
