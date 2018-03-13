@@ -22,7 +22,7 @@ class SchedulingActor(actor: ActorRef) extends Actor with ActorLogging with Time
 
   val stream = new ListBuffer[List[String]]
 
-  timers.startPeriodicTimer(Key, Tick, 20.second)
+  timers.startPeriodicTimer(Key, Tick, 30.second)
 
   override def receive: Receive = {
     case batch: String =>
