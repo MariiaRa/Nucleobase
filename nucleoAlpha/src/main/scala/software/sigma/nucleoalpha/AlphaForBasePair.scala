@@ -9,8 +9,14 @@ class AlphaForBasePair(eventLog: List[String]) {
   private val parallels = List.empty
   private val choices = List.empty
   footprint.buildRelations(causality, parallels, choices, directFollowers)
-  //1 step: get Tw - set of distinct activities in W (workflow log)
-  //gather all seen events from log
+
+  /**
+    * 1 step: get Tw - list of distinct events in W (workflow log)
+    *
+    * @param eventLog a list of traces from where the events are extracted
+    * @return list of all seen events in event log
+    */
+
   private def getAllSeenEvents(eventLog: List[String]): List[Char] = {
     val seenEvents = for (
       trace <- eventLog;
@@ -18,28 +24,41 @@ class AlphaForBasePair(eventLog: List[String]) {
     seenEvents.distinct
   }
 
-  //2 step: get Ti - set of start activities, first element in each trace in W
+  /**
+    * 2 step: get Ti - list of start events - first element in each trace in W
+    *
+    * @param eventLog a list of traces from where the events are extracted
+    * @return sorted list of all initial events in each trace in W
+    */
   def initialEvents(eventLog: List[String]): List[Char] = {
     val ti = for (pair <- eventLog) yield pair(0)
     ti.distinct.sortWith(_ < _)
   }
 
-  //3 step: get To - set of end activities, last element in each trace in W
+  /**
+    * 3 step: get To - list of end events, last element in each trace in W
+    *
+    * @param eventLog a list of traces from where the events are extracted
+    * @return sorted list of all end events in each trace in W
+    */
   def endEvents(eventLog: List[String]): List[Char] = {
     val to = for (pair <- eventLog) yield pair(pair.length - 1)
     to.distinct.sortWith(_ < _)
   }
 
+  /**
+    * 4 step: generate list of (A,B) where a in A and b in B are in causality relation, all events in A have independent relations and same for B
+    *
+    * @return list of a and b which have relation type of causality
+    */
   def makeXL(): List[(List[Char], List[Char])] = {
 
     val inputEvents = causality.map(a => a._1).distinct
     val outputEvents = causality.map(a => a._2).distinct
 
     val inputEventsSuperList = (1 until inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
-   // println("superset1: "+inputEventsSuperList)
 
     val outputEventsSuperList = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
-    //println("superset2: "+outputEventsSuperList)
 
     def getRelationType(firstEvent: Char, secondEvent: Char): String = {
       val rowIndex: Int = footprint.matrixEventToIndex(firstEvent)
@@ -57,8 +76,13 @@ class AlphaForBasePair(eventLog: List[String]) {
       t.distinct
     }
 
-    /*firstEvent   - a
-    check if all  a activities in A have independent relations*/
+    /**
+      * firstEvent - a
+      * check if all a events in A have independent relations
+      *
+      * @param inEvent list of all possible combinations of a in A
+      * @return list of a events that are independent
+      */
     def areAConnected(inEvent: List[List[Char]]) = {
       val t = for {
         a1 <- inEvent
@@ -67,8 +91,13 @@ class AlphaForBasePair(eventLog: List[String]) {
       t.distinct
     }
 
-    /*secondEvent   - b
-    check if all b activities in B have independent relations*/
+    /**
+      * secondEvent - b
+      * check if all b activities in B have independent relations
+      *
+      * @param outEvent list of all possible combinations of b in B
+      * @return list of b events that are independent
+      */
     def areBConnected(outEvent: List[List[Char]]) = {
       val t = for {
         a1 <- outEvent
@@ -76,10 +105,7 @@ class AlphaForBasePair(eventLog: List[String]) {
       } yield a1
       t.distinct
     }
-  // println("Connected "+areAConnected(inputEventsSuperList))
-// println("Connected "+areBConnected(outputEventsSuperList))
 
-    // For every a in A and b in B => a > b in f
     def checkIfABConnected(inEvent: List[Char], outEvent: List[Char]) = {
       val t = for {
         a <- inEvent
@@ -90,6 +116,13 @@ class AlphaForBasePair(eventLog: List[String]) {
       t.distinct
     }
 
+    /**
+      * For every a in A and b in B => a > b
+      *
+      * @param inEvents  list of a events that are independent
+      * @param outEvents list of b events that are independent
+      * @return list of a and b which have relation type of causality
+      */
     def findABPairs(inEvents: List[List[Char]], outEvents: List[List[Char]]) = {
       val x = for {
         a <- inEvents
@@ -98,11 +131,20 @@ class AlphaForBasePair(eventLog: List[String]) {
       } yield (a, b)
       x
     }
-    // println(findABPairs(areAConnected(inputEventsSuperList), areBConnected(outputEventsSuperList)))
+
     findABPairs(areAConnected(inputEventsSuperList), areBConnected(outputEventsSuperList))
   }
 
-  //5 step: delete (A,B) from W that are not maximal
+  /**
+    * 5 step: delete (A,B) from W that are not maximal
+    * Check if the input and output events of one place are supersets to the input and output events
+    * of another place. Place A with input events {a} and output events {b,e}
+    * is a superplace of Place B with input {a} and output {b} => Place B can
+    * be discarded
+    *
+    * @param pairs list of a and b pairs
+    * @return list of max pairs
+    */
   private def findMaximal(pairs: List[(List[Char], List[Char])]) = {
     val YL = new ListBuffer() ++ pairs
     for {
@@ -117,7 +159,11 @@ class AlphaForBasePair(eventLog: List[String]) {
     YL.result()
   }
 
-  //6 step: set of places
+  /**
+    * 6 step: set of places
+    *
+    * @return list of event to place transitions
+    */
   def makeYL() = {
     val YL = findMaximal(makeXL())
     val TI = initialEvents(eventLog)
@@ -133,7 +179,8 @@ class AlphaForBasePair(eventLog: List[String]) {
     places.toList
   }
 
-  //step7: set of arcs
+  /*  7 step: set of arcs
+   connect source and sink places to the transitions*/
   private def mapPlace(p: Place) = {
     if (!p.inEvent.isEmpty || !p.outEvent.isEmpty) {
       val in = for {
