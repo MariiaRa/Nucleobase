@@ -3,9 +3,11 @@ package ua.com
 import javax.jms._
 
 import org.apache.activemq.ActiveMQConnectionFactory
+import org.slf4j.LoggerFactory
 
 class Publisher(url: String, topicName: String, ID: String) {
 
+  private val logger = LoggerFactory.getLogger(this.getClass)
   val connectionFactory = new ActiveMQConnectionFactory(url)
   connectionFactory.setUseAsyncSend(false)
   val connection: Connection = connectionFactory.createConnection
@@ -19,19 +21,10 @@ class Publisher(url: String, topicName: String, ID: String) {
   publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
 
   def send(a: String): Unit = {
-    try {
-      val textMessage = session.createTextMessage(a)
-      publisher.send(textMessage)
-      println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination)
-    } catch {
-      case ex: IllegalStateException => {
-        val publisher = session.createProducer(topic)
-        publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
-        val textMessage = session.createTextMessage(a)
-        publisher.send(textMessage)
-        println("Message sent: " + textMessage.getText + " to " + textMessage.getJMSDestination)
-      }
-    }
+    val textMessage = session.createTextMessage(a)
+    publisher.send(textMessage)
+    //logger.info(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
+    println(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
   }
 
   def closeConnection(): Unit = {
