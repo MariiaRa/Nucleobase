@@ -1,11 +1,12 @@
 package software.sigma.nucleobase.actors
 
-import java.util.{Timer, TimerTask}
 import akka.actor.{Actor, ActorLogging, Props, Timers}
 import com.typesafe.config.{Config, ConfigFactory}
 import ua.com.Publisher
-import ua.com.entity.Nucleotide.getRandomNucleo
-import ua.com.entity.{DNAGenerator, Nucleotide}
+import ua.com.entity.NucleotideTransition._
+import ua.com.entity.{DNAGenerator, Nucleotides}
+
+import scala.concurrent.duration._
 
 object Mutator {
 
@@ -14,6 +15,8 @@ object Mutator {
   case object Stop
 
   case object Key
+
+  case object StartNewTimer
 
   def props: Props = Props[Mutator]
 }
@@ -24,7 +27,7 @@ class Mutator extends Actor with ActorLogging with Timers {
   import software.sigma.nucleobase.actors.MutatorCoordinator._
 
   val generator = new DNAGenerator
-  val nucleoStream: Stream[Nucleotide] = generator.mutation(getRandomNucleo)
+  val nucleoStream: Stream[Nucleotides] = generator.mutation(getRandomNucleo)
 
   val myConf: Config = ConfigFactory.load()
   val mutatorID: String = myConf.getString("activeMQ.DNAMutator.ID")
@@ -32,21 +35,13 @@ class Mutator extends Actor with ActorLogging with Timers {
   val mutatorTopicName: String = myConf.getString("activeMQ.DNAMutator.topicName")
   val publisher = new Publisher(mutatorUrl, mutatorTopicName, mutatorID)
 
-
-  val task: TimerTask = new TimerTask() {
-    def run() {
-      nucleoStream take 50 foreach (n => publisher.send(n.nucleo))
-    }
-  }
-  val timer = new Timer()
-  val delay = 0
-  val intevalPeriod = 15 * 1000
-
-  timer.scheduleAtFixedRate(task, delay, intevalPeriod)
-
   override def receive: Receive = {
-    case Publish => log.info("Publishing..."); timer.scheduleAtFixedRate(task, delay, intevalPeriod)
-    case Stop => log.info("Stopping..."); timer.cancel(); timer.purge();
-    case StartActor => log.info("Starting..."); self ! Publish
+    case StartNewTimer => {
+      log.info("Starting timer...")
+      timers.startPeriodicTimer(Key, Publish, 5 seconds)
+    }
+    case Publish => log.info("Publishing..."); nucleoStream take 2 foreach (n => publisher.send(n.nucleo))
+    case Stop => log.info("Stopping..."); timers.cancelAll()
+    case StartActor => log.info("Restarting..."); self ! StartNewTimer
   }
 }
