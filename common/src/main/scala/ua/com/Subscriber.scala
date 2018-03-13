@@ -3,9 +3,10 @@ package ua.com
 import javax.jms._
 
 import org.apache.activemq.ActiveMQConnectionFactory
+import org.slf4j.LoggerFactory
 
 class Subscriber(url: String, topicName: String, ID: String) {
-  // @throws(classOf[JMSException])
+  private val logger = LoggerFactory.getLogger(this.getClass)
   val connectionFactory = new ActiveMQConnectionFactory(url)
   val connection: Connection = connectionFactory.createConnection
   connection.setClientID(ID)
@@ -44,11 +45,9 @@ class Subscriber(url: String, topicName: String, ID: String) {
       if (message.isInstanceOf[TextMessage]) {
         val textMessage: TextMessage = message.asInstanceOf[TextMessage]
         sb.append(textMessage.getText)
-        // Once we have successfully processed the message, send an acknowledge back to ActiveMQ
         message.acknowledge
       }
     }
-    //println("DNA String: " + sb.toString())
     sb.toString()
   }
 
@@ -56,7 +55,7 @@ class Subscriber(url: String, topicName: String, ID: String) {
     val message: Message = subscriber.receiveNoWait()
     if (message.isInstanceOf[TextMessage] && message != null) {
       val textMessage: TextMessage = message.asInstanceOf[TextMessage]
-      println("Received message: " + textMessage.getText())
+      logger.info("Received message: " + textMessage.getText())
       message.acknowledge
       Some(textMessage.getText())
      } else {
