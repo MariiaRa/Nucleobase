@@ -29,7 +29,7 @@ class SchedulingActor(actor: ActorRef) extends Actor with ActorLogging with Time
       stream += batch.grouped(2).toList
     case Tick =>
       actor ! DNALog(stream.toList)
-      log.info(s"Size of stream: ${stream.toList.length}")
+     // log.info(s"Size of stream: ${stream.toList.length}")
       stream.clear()
   }
 }
