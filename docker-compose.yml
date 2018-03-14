@@ -1,6 +1,12 @@
+version: '0.1'
 services:
   DNAProducer:
-      image: 
+    image: dnaproducer:latest
+  DNAValidator:
+    image: dnavalidator:latest
+  DNAMutator:
+    image: dnamutator:latest
+
 
 
 
