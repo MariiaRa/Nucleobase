@@ -25,7 +25,9 @@ lazy val `DNAProducer` = project.enablePlugins(ProjectPlugin).
     mainClass in Compile := Some("software.sigma.nucleobase.DNAProducer"),
     dockerBaseImage := "anapsix/alpine-java",
     //   dockerEntrypoint := Seq("bin/start.sh"), //script to launch after docker container started
-    dockerUpdateLatest := true
+    dockerUpdateLatest := true,
+    packageName in Docker := packageName.value,
+    version in Docker := version.value,
   )
 //Publisher2
 lazy val `DNAMutator` = project.enablePlugins(ProjectPlugin, JavaAppPackaging).
@@ -33,16 +35,20 @@ lazy val `DNAMutator` = project.enablePlugins(ProjectPlugin, JavaAppPackaging).
   settings(
     mainClass in Compile := Some("software.sigma.nucleobase.DNAMutator"),
     dockerBaseImage := "anapsix/alpine-java",
-    dockerUpdateLatest := true
+    dockerUpdateLatest := true,
+    packageName in Docker := packageName.value,
+    version in Docker := version.value,
   )
 //consumer/validator
 lazy val `DNAValidator` = project.enablePlugins(ProjectPlugin, JavaAppPackaging).
-  dependsOn(`common`, `nucleoAlpha`).
+  dependsOn(`common`, `nucleoAlpha`, `alpha`).
   settings(
     mainClass in Compile := Some("software.sigma.nucleobase.DNAValidator"),
-    libraryDependencies ++= Seq(actor, akkaStrem, akkaHTTP, akkaJSON),
+    libraryDependencies ++= Seq(actor, akkaStrem, akkaHTTP, akkaJSON, scalatest, scalactic, akkaHTTPTest, akkaTestKit),
     dockerBaseImage := "anapsix/alpine-java",
-    dockerUpdateLatest := true
+    dockerUpdateLatest := true,
+    packageName in Docker := packageName.value,
+    version in Docker := version.value
   )
 //basic alpha algorithm
 lazy val `alpha` = project.enablePlugins(ProjectPlugin).
