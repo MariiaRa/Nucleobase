@@ -19,8 +19,7 @@ import scala.concurrent.duration._
 
 trait URLRoute extends JsonSupport {
 
-  implicit def system: ActorSystem = ActorSystem("ActorSystem")
-
+  implicit def system: ActorSystem
   implicit lazy val timeout: Timeout = Timeout(5.seconds)
   private val logger = LoggerFactory.getLogger("Route logger")
 
