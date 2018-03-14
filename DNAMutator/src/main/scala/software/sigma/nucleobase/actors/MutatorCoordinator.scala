@@ -8,7 +8,8 @@ import ua.com.Subscriber
 object MutatorCoordinator {
 
   case object ReadMessage
-case object StartActor
+
+  case object StartActor
 
   def props(actor: ActorRef): Props = Props(new MutatorCoordinator(actor))
 }
