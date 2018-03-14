@@ -36,12 +36,17 @@ class Mutator extends Actor with ActorLogging with Timers {
   val publisher = new Publisher(mutatorUrl, mutatorTopicName, mutatorID)
 
   override def receive: Receive = {
-    case StartNewTimer => {
+    case StartNewTimer =>
       log.info("Starting timer...")
-      timers.startPeriodicTimer(Key, Publish, 5 seconds)
-    }
-    case Publish => log.info("Publishing..."); nucleoStream take 2 foreach (n => publisher.send(n.nucleo))
-    case Stop => log.info("Stopping..."); timers.cancelAll()
-    case StartActor => log.info("Restarting..."); self ! StartNewTimer
+      timers.startPeriodicTimer(Key, Publish, 14 seconds)
+    case Publish =>
+      log.info("Publishing...")
+      nucleoStream take 2 foreach (n => publisher.send(n.nucleo))
+    case Stop =>
+      log.info("Stopping...")
+      timers.cancelAll()
+    case StartActor =>
+      log.info("Restarting...")
+      self ! StartNewTimer
   }
 }
