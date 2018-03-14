@@ -1,5 +1,6 @@
 package software.sigma.nucleobase
 
+import java.net.InetAddress
 import javax.jms.JMSException
 
 import akka.actor.{ActorRef, ActorSystem}
@@ -18,6 +19,11 @@ import scala.io.StdIn
 object DNAValidator extends App with URLRoute {
   private val logger = LoggerFactory.getLogger(this.getClass)
 
+  implicit def system: ActorSystem = ActorSystem("ActorSystem")
+
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext = system.dispatcher
+
   private def createLog(input: String): List[String] = {
     input.grouped(2).toList
   }
@@ -34,20 +40,17 @@ object DNAValidator extends App with URLRoute {
     val firstLog = createLog(subscriber.processBatch())
     val correctModel = validator.buildCorrectModel(firstLog)
 
-    implicit def system: ActorSystem = ActorSystem("ActorSystem")
-
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
-    implicit val executionContext = system.dispatcher
-
     val regulator = system.actorOf(Coordinator.props, "Regulator")
     val rater: ActorRef = system.actorOf(CalculatingActor.props(validator, correctModel, regulator), "Rater")
     val batcher: ActorRef = system.actorOf(SchedulingActor.props(rater), "Scheduler")
 
     lazy val route: Route = getMyRate(rater)
 
-    val bindingFuture = Http().bindAndHandle(route, "10.40.57.126", 8080)
+    val ipServer = InetAddress.getLocalHost().getHostAddress()
 
-    Console.println("Server online at http://localhost:8080/\nPress RETURN to stop...")
+    val bindingFuture = Http().bindAndHandle(route, ipServer, 8080)
+
+    Console.println(s"Server online at http://$ipServer:8080/\nPress RETURN to stop...")
 
     logger.info("Validator has started.")
 
