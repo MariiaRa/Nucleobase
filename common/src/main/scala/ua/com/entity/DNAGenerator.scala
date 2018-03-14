@@ -1,21 +1,16 @@
 package ua.com.entity
-
-import ua.com.entity.Nucleotide._
+import ua.com.entity.NucleotideTransition._
 
 class DNAGenerator {
-  private def nextChar(first: Nucleotide): Nucleotide = {
-    if (first == Adenine) Thymine
-    else if (first == Thymine) Adenine
-    else if (first == Guanine) Cytosine
-    else Guanine
-  }
 
-  def nucleo(a: Nucleotide, bool: Boolean): Stream[Nucleotide] = {
-    if (!bool) a #:: nucleo(nextChar(a), !bool)
+  //generate correct DNA string
+  def nucleo(a: Nucleotides, bool: Boolean): Stream[Nucleotides] = {
+    if (!bool) a #:: nucleo(transition(a), !bool)
     else a #:: nucleo(getRandomNucleo, !bool)
   }
 
-  def mutation(a: Nucleotide): Stream[Nucleotide] = {
+  //introduce mutations
+  def mutation(a: Nucleotides): Stream[Nucleotides] = {
     a #:: mutation(getRandomNucleo)
   }
 }

@@ -8,7 +8,7 @@ object RootProjectPlugin extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     organization in ThisBuild := "software.sigma",
-    name := "ActiveMQTest",
+    name := "Nucleobase",
     version := "0.1",
     scalaVersion := "2.12.4",
     //topLevelDirectory := None, // do not create top level directory in artifact

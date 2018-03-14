@@ -1,14 +1,13 @@
-package software.sigma.alpha
+package software.sigma.nucleoalpha
 
 import scala.collection.mutable.ListBuffer
 
-class AlphaAlgorithm(eventLog: List[String]) {
-
+class AlphaForBasePair(eventLog: List[String]) {
   private val footprint = new FootprintMartix(eventLog)
   private val directFollowers = footprint.getDirectFollowers
-  private val causality = footprint.getCausalities(directFollowers)
-  private val parallels = footprint.getParallelism(directFollowers)
-  private val choices = footprint.getExclusiveness(directFollowers)
+  private val causality = directFollowers
+  private val parallels = List.empty
+  private val choices = List.empty
   footprint.buildRelations(causality, parallels, choices, directFollowers)
 
   /**
@@ -17,6 +16,7 @@ class AlphaAlgorithm(eventLog: List[String]) {
     * @param eventLog a list of traces from where the events are extracted
     * @return list of all seen events in event log
     */
+
   private def getAllSeenEvents(eventLog: List[String]): List[Char] = {
     val seenEvents = for (
       trace <- eventLog;
@@ -49,10 +49,9 @@ class AlphaAlgorithm(eventLog: List[String]) {
   /**
     * 4 step: generate list of (A,B) where a in A and b in B are in causality relation, all events in A have independent relations and same for B
     *
-    * @param causality a list of event pairs which have relation type of causality
     * @return list of a and b which have relation type of causality
-    **/
-  def makeXL(causality: List[(Char, Char)]): List[(List[Char], List[Char])] = {
+    */
+  def makeXL(): List[(List[Char], List[Char])] = {
 
     val inputEvents = causality.map(a => a._1).distinct
     val outputEvents = causality.map(a => a._2).distinct
@@ -111,7 +110,9 @@ class AlphaAlgorithm(eventLog: List[String]) {
       val t = for {
         a <- inEvent
         b <- outEvent
-      } yield getRelationType(a, b) == "->"
+        /*relations = getRelationType(a, b)
+        if (relations == "->" || relations == "<-")*/
+      } yield getRelationType(a, b) != "#"
       t.distinct
     }
 
@@ -164,7 +165,7 @@ class AlphaAlgorithm(eventLog: List[String]) {
     * @return list of event to place transitions
     */
   def makeYL() = {
-    val YL = findMaximal(makeXL(causality))
+    val YL = findMaximal(makeXL())
     val TI = initialEvents(eventLog)
     val inPlace = Place(List[Char](), TI)
     val TO = endEvents(eventLog)
@@ -180,7 +181,6 @@ class AlphaAlgorithm(eventLog: List[String]) {
 
   /*  7 step: set of arcs
    connect source and sink places to the transitions*/
-
   private def mapPlace(p: Place) = {
     if (!p.inEvent.isEmpty || !p.outEvent.isEmpty) {
       val in = for {
@@ -195,3 +195,4 @@ class AlphaAlgorithm(eventLog: List[String]) {
 
   val FL = makeYL().map(x => mapPlace(x))
 }
+
