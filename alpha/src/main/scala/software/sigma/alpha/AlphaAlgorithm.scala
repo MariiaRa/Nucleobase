@@ -32,7 +32,6 @@ class AlphaAlgorithm(eventLog: List[String]) {
     */
   def initialEvents(eventLog: List[String]): List[Char] = {
     val ti = for (pair <- eventLog) yield pair(0)
-    println(ti.distinct)
     ti.distinct.sortWith(_ < _)
   }
 
@@ -44,7 +43,6 @@ class AlphaAlgorithm(eventLog: List[String]) {
     */
   def endEvents(eventLog: List[String]): List[Char] = {
     val to = for (pair <- eventLog) yield pair(pair.length - 1)
-    println(to.distinct)
     to.distinct.sortWith(_ < _)
   }
 
@@ -60,10 +58,8 @@ class AlphaAlgorithm(eventLog: List[String]) {
     val outputEvents = causality.map(a => a._2).distinct
 
     val inputEventsSuperList = (1 until inputEvents.size).flatMap(inputEvents.toList.combinations).map(_.toList).toList
-    println(inputEventsSuperList)
 
     val outputEventsSuperList = (1 until outputEvents.size).flatMap(outputEvents.toList.combinations).map(_.toList).toList
-    println(outputEventsSuperList)
 
     def getRelationType(firstEvent: Char, secondEvent: Char): String = {
       val rowIndex: Int = footprint.matrixEventToIndex(firstEvent)
@@ -170,10 +166,8 @@ class AlphaAlgorithm(eventLog: List[String]) {
   def makeYL() = {
     val YL = findMaximal(makeXL(causality))
     val TI = initialEvents(eventLog)
-    println(TI)
     val inPlace = Place(List[Char](), TI)
     val TO = endEvents(eventLog)
-    println(TO)
     val outPlace = Place(TO, List[Char]())
     var places = new ListBuffer[Place]()
     places += inPlace
