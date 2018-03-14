@@ -26,7 +26,7 @@ class CalculatingActor(validator: AlphaNucleoValidator, correctModel: List[Place
       currentRate = rate
     case RateRequest =>
       log.info("Received request for rate")
-      log.info(s"Current of mutations: $currentRate")
+      log.info(s"Current rate of mutations: $currentRate")
       sender() ! Some(Rate(currentRate))
   }
 }
