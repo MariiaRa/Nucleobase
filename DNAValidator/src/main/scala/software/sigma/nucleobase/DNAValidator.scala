@@ -45,7 +45,7 @@ object DNAValidator extends App with URLRoute {
 
     lazy val route: Route = getMyRate(rater)
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
+    val bindingFuture = Http().bindAndHandle(route, "10.40.57.126", 8080)
 
     Console.println("Server online at http://localhost:8080/\nPress RETURN to stop...")
 
@@ -59,6 +59,7 @@ object DNAValidator extends App with URLRoute {
     bindingFuture
       .flatMap(_.unbind())
       .onComplete(_ => system.terminate())
+
   } catch {
     case ex: JMSException => println(ex.getMessage)
   }
