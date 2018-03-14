@@ -14,17 +14,16 @@ class Publisher(url: String, topicName: String, ID: String) {
   connection.setClientID(ID)
   connection.start()
 
-  val session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
+  val session: Session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)
   val topic: Topic = session.createTopic(topicName)
 
-  val publisher = session.createProducer(topic)
+  val publisher: MessageProducer = session.createProducer(topic)
   publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
 
   def send(a: String): Unit = {
     val textMessage = session.createTextMessage(a)
     publisher.send(textMessage)
-    //logger.info(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
-    println(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
+    // println(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
   }
 
   def closeConnection(): Unit = {
