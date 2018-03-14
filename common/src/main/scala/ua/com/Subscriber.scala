@@ -45,7 +45,7 @@ class Subscriber(url: String, topicName: String, ID: String) {
       if (message.isInstanceOf[TextMessage]) {
         val textMessage: TextMessage = message.asInstanceOf[TextMessage]
         sb.append(textMessage.getText)
-        message.acknowledge
+        message.acknowledge()
       }
     }
     sb.toString()
@@ -55,10 +55,10 @@ class Subscriber(url: String, topicName: String, ID: String) {
     val message: Message = subscriber.receiveNoWait()
     if (message.isInstanceOf[TextMessage] && message != null) {
       val textMessage: TextMessage = message.asInstanceOf[TextMessage]
-      logger.info("Received message: " + textMessage.getText())
-      message.acknowledge
-      Some(textMessage.getText())
-     } else {
+      logger.info("Received message: " + textMessage.getText)
+      message.acknowledge()
+      Some(textMessage.getText)
+    } else {
       None
     }
   }
