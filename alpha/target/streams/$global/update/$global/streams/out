@@ -413,6 +413,7 @@
 [debug] dependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.12.4 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.12.4 {scala-tool=[default, optional(default)]}
 [debug] dependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.12.4 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.12.4 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.12.4 {scala-tool=[default, optional(default)], compile=[default(compile)]}
 [debug] sbt-chain: Checking cache for: dependency: org.scala-lang.modules#scala-xml_2.12;1.0.6 {compile=[compile(*), master(*)], runtime=[runtime(*)]}
+[debug] no default cache defined: set to /home/maria/.ivy2/cache
 [debug] sbt-chain: module revision found in cache: org.scala-lang.modules#scala-xml_2.12;1.0.6
 [debug] 	found org.scala-lang.modules#scala-xml_2.12;1.0.6 in sbt-chain
 [debug] dependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.12.0 {test=[runtime(*), master(*)]} => dependency: org.scala-lang#scala-compiler;2.12.4 {test=[runtime(*), master(*)]}
@@ -470,6 +471,7 @@
 [debug] dependency descriptor has been mediated: dependency: org.scala-lang#scala-compiler;2.12.4 {scala-tool=[default, optional(default)]} => dependency: org.scala-lang#scala-compiler;2.12.4 {scala-tool=[default, optional(default)]}
 [debug] dependency descriptor has been mediated: MergedDescriptors(dependency: org.scala-lang#scala-library;2.12.4 {scala-tool=[default, optional(default)]},dependency: org.scala-lang#scala-library;2.12.4 {compile=[default(compile)]}) => dependency: org.scala-lang#scala-library;2.12.4 {scala-tool=[default, optional(default)], compile=[default(compile)]}
 [debug] sbt-chain: Checking cache for: dependency: jline#jline;2.14.5 {optional=[compile(*), master(*)]}
+[debug] no default cache defined: set to /home/maria/.ivy2/cache
 [debug] sbt-chain: module revision found in cache: jline#jline;2.14.5
 [debug] 	found jline#jline;2.14.5 in sbt-chain
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.12.4->jline#jline;2.14.5 [optional->compile(*)]
@@ -478,26 +480,26 @@
 [debug] == resolving dependencies software.sigma#alpha;0.1.0-SNAPSHOT->org.scala-lang#scala-library;2.12.4 [scala-tool->compile]
 [debug] == resolving dependencies software.sigma#alpha;0.1.0-SNAPSHOT->org.scala-lang#scala-library;2.12.4 [scala-tool->master]
 [debug] == resolving dependencies software.sigma#alpha;0.1.0-SNAPSHOT->org.scala-lang#scala-library;2.12.4 [scala-tool->optional(default)]
+[debug] no default cache defined: set to /home/maria/.ivy2/cache
 [debug] ignoring unhandled DependencyDescriptorMediator: class sbt.internal.librarymanagement.IvyScalaUtil$OverrideScalaMediator
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-library;2.12.4!scala-library.jar
-[debug] 	[NOT REQUIRED] org.slf4j#slf4j-log4j12;1.7.16!slf4j-log4j12.jar
 [debug] 	[NOT REQUIRED] org.slf4j#slf4j-api;1.7.16!slf4j-api.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#scala-reflect;2.12.4!scala-reflect.jar
-[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(bundle)
 [debug] no default ivy user dir defined: set to /home/maria/.ivy2
-[debug] no default cache defined: set to /home/maria/.ivy2/cache
 [debug] including url: jar:file:/home/maria/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-public.xml
 [debug] no default cache defined: set to /home/maria/.ivy2/cache
 [debug] including url: jar:file:/home/maria/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-shared.xml
 [debug] including url: jar:file:/home/maria/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-local.xml
+[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.12.4!scala-compiler.jar
+[debug] 	[NOT REQUIRED] org.scala-lang.modules#scala-xml_2.12;1.0.6!scala-xml_2.12.jar(bundle)
+[debug] 	[NOT REQUIRED] jline#jline;2.14.5!jline.jar
+[debug] 	[NOT REQUIRED] org.slf4j#slf4j-log4j12;1.7.16!slf4j-log4j12.jar
+[debug] 	[NOT REQUIRED] log4j#log4j;1.2.17!log4j.jar(bundle)
 [debug] including url: jar:file:/home/maria/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-main-chain.xml
 [debug] including url: jar:file:/home/maria/.sbt/boot/scala-2.12.4/org.scala-sbt/sbt/1.1.1/ivy-2.3.0-sbt-b18f59ea3bc914a297bb6f1a4f7fb0ace399e310.jar!/org/apache/ivy/core/settings/ivysettings-default-chain.xml
-[debug] 	[NOT REQUIRED] org.scala-lang#scala-compiler;2.12.4!scala-compiler.jar
-[debug] 	[NOT REQUIRED] log4j#log4j;1.2.17!log4j.jar(bundle)
-[debug] 	[NOT REQUIRED] jline#jline;2.14.5!jline.jar
-[debug] settings loaded (22ms)
+[debug] settings loaded (7ms)
 [debug] 	default cache: /home/maria/.ivy2/cache
 [debug] 	default resolver: default
 [debug] 	-- 5 resolvers:
@@ -506,7 +508,7 @@
 [debug] 	public [ibiblio]
 [debug] 	main [chain] [shared, public]
 [debug] 	local [file]
-[debug] :: resolution report :: resolve 43ms :: artifacts dl 51ms
+[debug] :: resolution report :: resolve 159ms :: artifacts dl 37ms
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT compile produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-compile.xml
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT runtime produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-runtime.xml
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT test produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-test.xml
@@ -518,5 +520,5 @@
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT plugin produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-plugin.xml
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT pom produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-pom.xml
 [debug] 	report for software.sigma#alpha;0.1.0-SNAPSHOT scala-tool produced in /home/maria/sbt-projects/Nucleobase/alpha/target/resolution-cache/reports/software.sigma-alpha-scala-tool.xml
-[debug] 	resolve done (43ms resolve - 51ms download)
+[debug] 	resolve done (159ms resolve - 37ms download)
 [info] Done updating.
