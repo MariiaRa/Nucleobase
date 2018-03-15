@@ -2,23 +2,27 @@ package software.sigma.nucleoalpha
 
 class FootprintMartix(eventLog: List[String]) {
 
-  val seenEvents = (for {
+  val seenEvents: List[Char] = (for {
     trace <- eventLog
     event <- trace
   } yield event).distinct
 
   val matrix = Array.ofDim[String](seenEvents.length, seenEvents.length)
 
-  //fill the matrix of relations
-  for (x <- 0 until seenEvents.length; y <- 0 until seenEvents.length) {
+  // fill the matrix of relations
+  for (x <- seenEvents.indices; y <- seenEvents.indices) {
     matrix(x)(y) = "#"
   }
 
   val matrixEventToIndex: Map[Char, Int] = seenEvents.zipWithIndex.toMap
 
-  //Find all relations
-  //Direct follower : a > b are in execution seqeunce iff b directly follows a
-  def getDirectFollowers() = {
+  /**
+    * Direct follower : a > b are in execution seqeunce iff b directly follows a
+    *
+    * @param eventLog event log over some set of activities, which we feed to alpha algorithm
+    * @return list of direct followers
+    */
+  def getDirectFollowers(eventLog: List[String]): List[(Char, Char)] = {
     val followers = for {
       pair <- eventLog
       (event, index) <- pair.zipWithIndex
@@ -27,7 +31,12 @@ class FootprintMartix(eventLog: List[String]) {
     followers.distinct
   }
 
-  //Causality : a → b iff a > b but not b > a
+  /**
+    * Causality : a → b iff a > b but not b > a
+    *
+    * @param df list of direct followers
+    * @return list of causalities
+    */
   def getCausalities(df: List[(Char, Char)]): List[(Char, Char)] = {
     val casualities = for {
       n1 <- seenEvents
@@ -37,7 +46,12 @@ class FootprintMartix(eventLog: List[String]) {
     casualities.distinct
   }
 
-  //Parallelism : a ║ b iff a > b and b > a
+  /**
+    * Parallelism : a ║ b iff a > b and b > a
+    *
+    * @param df list of direct followers
+    * @return list of parallel events
+    */
   def getParallelism(df: List[(Char, Char)]): List[(Char, Char)] = {
     val parallels = for {
       n1 <- seenEvents
@@ -48,7 +62,12 @@ class FootprintMartix(eventLog: List[String]) {
   }
 
   //Exclusiveness : a # b iff not a > b and not b > a
-  def getExclusiveness(df: List[(Char, Char)]) = {
+  /**
+    *
+    * @param df list of direct followers
+    * @return list of events that have no relatuons
+    */
+  def getExclusiveness(df: List[(Char, Char)]): List[(Char, Char)] = {
     val test = for {
       i ← seenEvents.indices
       n1 = seenEvents(i)
@@ -59,42 +78,40 @@ class FootprintMartix(eventLog: List[String]) {
     test.distinct.toList
   }
 
-  //build matrix of all relations
-  def buildRelations(causality: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)], directFollowers: List[(Char, Char)]): Unit = {
+  /**
+    * build matrix of all relations
+    *
+    * @param causalities     events with causality relations
+    * @param parallels       events that are parallel
+    * @param choices         list of events that have no relatuons
+    * @param directFollowers direct followers
+    */
+  def buildRelations(causalities: List[(Char, Char)], parallels: List[(Char, Char)], choices: List[(Char, Char)], directFollowers: List[(Char, Char)]): Unit = {
     if (parallels.nonEmpty) {
       for {
-        pair4 <- directFollowers
+        df <- directFollowers
       } {
-        matrix(matrixEventToIndex(pair4._1))(matrixEventToIndex(pair4._2)) = ">"
-        matrix(matrixEventToIndex(pair4._2))(matrixEventToIndex(pair4._1)) = "<"
+        matrix(matrixEventToIndex(df._1))(matrixEventToIndex(df._2)) = ">"
+        matrix(matrixEventToIndex(df._2))(matrixEventToIndex(df._1)) = "<"
       }
     }
 
-    if (causality.nonEmpty) {
+    if (causalities.nonEmpty) {
       for {
-        pair1 <- causality
+        causality <- causalities
       } {
-        matrix(matrixEventToIndex(pair1._1))(matrixEventToIndex(pair1._2)) = "->"
-        matrix(matrixEventToIndex(pair1._2))(matrixEventToIndex(pair1._1)) = "<-"
+        matrix(matrixEventToIndex(causality._1))(matrixEventToIndex(causality._2)) = "->"
+        matrix(matrixEventToIndex(causality._2))(matrixEventToIndex(causality._1)) = "<-"
       }
     }
 
     if (parallels.nonEmpty) {
       for {
-        pair2 <- parallels
+        parallel <- parallels
       } {
-        matrix(matrixEventToIndex(pair2._2))(matrixEventToIndex(pair2._1)) = "||"
-        matrix(matrixEventToIndex(pair2._1))(matrixEventToIndex(pair2._2)) = "||"
+        matrix(matrixEventToIndex(parallel._2))(matrixEventToIndex(parallel._1)) = "||"
+        matrix(matrixEventToIndex(parallel._1))(matrixEventToIndex(parallel._2)) = "||"
       }
     }
-
-    /*   println("Footprint matrix:")
-       for (i <- 0 until matrix.length) {
-         var line: String = ""
-         for (j <- 0 until matrix(0).length) {
-           line += matrix(i)(j) + " "
-         }
-         println(line)
-       }*/
   }
 }

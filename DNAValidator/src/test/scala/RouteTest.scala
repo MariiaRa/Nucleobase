@@ -24,8 +24,6 @@ class RouteTest  extends WordSpec
   val url: String = myConf.getString("activeMQ.Validator.url")
   val topicName: String = myConf.getString("activeMQ.Validator.topicName")
 
-  //val subscriber = new Subscriber(url, topicName, ID)
-
   val validator = new AlphaNucleoValidator
   val firstLog = List("abcd")
   val correctModel = validator.buildCorrectModel(firstLog)

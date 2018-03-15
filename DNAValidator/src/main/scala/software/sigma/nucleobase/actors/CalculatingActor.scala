@@ -16,7 +16,7 @@ class CalculatingActor(validator: AlphaNucleoValidator, correctModel: List[Place
 
   import CalculatingActor._
 
-  var currentRate: Double = 0
+  var currentRate: BigDecimal = 0
 
   override def receive: Receive = {
     case logs: DNALog =>

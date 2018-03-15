@@ -9,7 +9,9 @@ import ua.com.Publisher
 
 object Coordinator {
   def props: Props = Props[Coordinator]
-  case class SaveRate(rate: Double)
+
+  case class SaveRate(rate: BigDecimal)
+
 }
 
 class Coordinator extends Actor with ActorLogging {
@@ -21,18 +23,19 @@ class Coordinator extends Actor with ActorLogging {
   val ID: String = myConf.getString("activeMQ.Coordinator.ID")
   val url: String = myConf.getString("activeMQ.Coordinator.url")
   val topicName: String = myConf.getString("activeMQ.Coordinator.topicName")
+  val threshold: Double = myConf.getDouble("activeMQ.Coordinator.thresholdRate")
 
   val regulator = new Publisher(url, topicName, ID)
   logger.info("Service coordinator has started.")
 
-  var previousRate = 0.0
+  var previousRate: BigDecimal = 0.0
 
   override def receive: Receive = {
     case r: Rate =>
       self ! SaveRate(r.rate)
-      if (r.rate > 0.01 && previousRate < 0.01) {
+      if (r.rate > threshold && previousRate < threshold) {
         regulator.send("Stop")
-      } else if (r.rate < 0.01 && previousRate > 0.01){
+      } else if (r.rate < threshold && previousRate > threshold) {
         regulator.send("Start")
       }
     case save: SaveRate =>

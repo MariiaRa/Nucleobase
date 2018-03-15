@@ -20,6 +20,7 @@ import scala.concurrent.duration._
 trait URLRoute extends JsonSupport {
 
   implicit def system: ActorSystem
+
   implicit lazy val timeout: Timeout = Timeout(5.seconds)
   private val logger = LoggerFactory.getLogger("Route logger")
 
@@ -28,7 +29,6 @@ trait URLRoute extends JsonSupport {
     val myRoutes =
       get {
         path("rate") {
-
           val rate: Future[Option[Rate]] = (rater ? RateRequest).mapTo[Option[Rate]]
           onSuccess(rate) {
             case Some(currentRate) => complete(currentRate)
@@ -36,7 +36,6 @@ trait URLRoute extends JsonSupport {
           }
         }
       }
-
     myRoutes
   }
 }

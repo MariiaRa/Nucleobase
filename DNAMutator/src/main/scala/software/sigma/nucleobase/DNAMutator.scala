@@ -22,7 +22,7 @@ object DNAMutator extends App {
   val mutator: ActorRef = system.actorOf(Mutator.props, "Mutator")
   val mutatorCoordinator: ActorRef = system.actorOf(MutatorCoordinator.props(mutator), "CoordinatorOfMutator")
 
-  system.scheduler.scheduleOnce(5 seconds, mutator, StartNewTimer)
-  system.scheduler.schedule(0 milliseconds, 2 seconds, mutatorCoordinator, ReadMessage)
+  system.scheduler.scheduleOnce(5.seconds, mutator, StartNewTimer)
+  system.scheduler.schedule(0.milliseconds, 2.seconds, mutatorCoordinator, ReadMessage)
 
 }

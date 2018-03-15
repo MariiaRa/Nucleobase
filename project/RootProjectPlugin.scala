@@ -11,7 +11,7 @@ object RootProjectPlugin extends AutoPlugin {
     name := "Nucleobase",
     version := "0.1",
     scalaVersion := "2.12.4",
-    //topLevelDirectory := None, // do not create top level directory in artifact
+    // topLevelDirectory := None, // do not create top level directory in artifact
     crossPaths in ThisBuild := false, // Do not append Scala versions to the generated artifacts
     // use cached version for non changing libraries
     updateOptions in ThisBuild := updateOptions.value.withCachedResolution(cachedResoluton = true),

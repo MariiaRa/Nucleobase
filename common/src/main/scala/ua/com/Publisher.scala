@@ -20,10 +20,13 @@ class Publisher(url: String, topicName: String, ID: String) {
   val publisher: MessageProducer = session.createProducer(topic)
   publisher.setDeliveryMode(DeliveryMode.PERSISTENT)
 
-  def send(a: String): Unit = {
-    val textMessage = session.createTextMessage(a)
+  /**
+    *
+    * @param nucleobase receive nucleotide and publish it to topic
+    */
+  def send(nucleobase: String): Unit = {
+    val textMessage = session.createTextMessage(nucleobase)
     publisher.send(textMessage)
-    // println(s"Sending message: ${textMessage.getText} to ${textMessage.getJMSDestination}")
   }
 
   def closeConnection(): Unit = {

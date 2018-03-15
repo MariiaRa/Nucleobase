@@ -8,12 +8,14 @@ import org.slf4j.LoggerFactory
 import ua.com.Publisher
 import ua.com.entity.NucleotideTransition._
 import ua.com.entity.{DNAGenerator, Nucleotides}
+import scala.concurrent.duration._
 
 object DNAProducer extends App {
   private val logger = LoggerFactory.getLogger(this.getClass)
   try {
+    val COUNT: Int = 2000
     val generator = new DNAGenerator
-    val DNAStream: Stream[Nucleotides] = generator.nucleo(getRandomNucleo, false)
+    val DNAStream: Stream[Nucleotides] = generator.buildDNA(getRandomNucleo, false)
 
     val myConf: Config = ConfigFactory.load()
     val ID: String = myConf.getString("DNAProducer.ID")
@@ -25,20 +27,16 @@ object DNAProducer extends App {
 
     val task: TimerTask = new TimerTask() {
       def run() {
-        DNAStream take 40000 foreach (n => publisher.send(n.nucleo))
+        DNAStream take COUNT foreach (nucleobase => publisher.send(nucleobase.nucleo))
       }
     }
     val timer = new Timer()
     val delay = 0
-    val intevalPeriod = 10 * 1000
+    val interval = 5.seconds
 
-    timer.scheduleAtFixedRate(task, delay, intevalPeriod)
+    timer.scheduleAtFixedRate(task, delay, interval.length)
 
-    /*while (true) {
-      DNAStream take 10000 foreach (n => publisher.send(n.nucleo))
-    }*/
-    //  publisher.closeConnection()
   } catch {
-    case ex: JMSException => println(ex.getMessage)
+    case ex: JMSException => logger.error(ex.getMessage)
   }
 }

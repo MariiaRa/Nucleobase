@@ -24,8 +24,14 @@ case object Guanine extends Nucleotides {
 
 object NucleotideTransition {
 
-  def transition(n: Nucleotides): Nucleotides = {
-    n match {
+  /**
+    * perform nucleobase complementation
+    *
+    * @param nucleobase
+    * @return
+    */
+  def getCompelement(nucleobase: Nucleotides): Nucleotides = {
+    nucleobase match {
       case Adenine => Thymine
       case Thymine => Adenine
       case Cytosine => Guanine

@@ -50,7 +50,7 @@ object DNAValidator extends App with URLRoute {
 
     val bindingFuture = Http().bindAndHandle(route, ipServer, 8080)
 
-    Console.println(s"Server online at http://$ipServer:8080/\nPress RETURN to stop...")
+    logger.info(s"Server online at http://$ipServer:8080/\nPress RETURN to stop...")
 
     logger.info("Validator has started.")
 

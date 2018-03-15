@@ -16,8 +16,7 @@ object DefaultResolversPlugin extends AutoPlugin {
   val mavenCentral = DefaultMavenRepository
 
   override lazy val projectSettings = Seq(
-    // Add all needed resolvers
-    resolvers ++= Seq(
+      resolvers ++= Seq(
       scalaz,
       typeSafeResolver,
       sprayResolver,

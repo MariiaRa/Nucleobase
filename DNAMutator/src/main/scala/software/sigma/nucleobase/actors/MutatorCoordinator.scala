@@ -19,10 +19,10 @@ class MutatorCoordinator(actor: ActorRef) extends Actor with ActorLogging {
   import MutatorCoordinator._
 
   val myConf: Config = ConfigFactory.load()
-  val raterID: String = myConf.getString("activeMQ.Coordinator.ID")
-  val raterUrl: String = myConf.getString("activeMQ.Coordinator.url")
-  val raterTopicName: String = myConf.getString("activeMQ.Coordinator.topicName")
-  val rateChecker = new Subscriber(raterUrl, raterTopicName, raterID)
+  val ID: String = myConf.getString("activeMQ.Coordinator.ID")
+  val url: String = myConf.getString("activeMQ.Coordinator.url")
+  val topicName: String = myConf.getString("activeMQ.Coordinator.topicName")
+  val rateChecker = new Subscriber(url, topicName, ID)
 
   override def receive: Receive = {
     case ReadMessage => {

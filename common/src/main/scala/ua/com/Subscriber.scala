@@ -16,28 +16,14 @@ class Subscriber(url: String, topicName: String, ID: String) {
   val topic: Topic = session.createTopic(topicName)
   val subscriber: TopicSubscriber = session.createDurableSubscriber(topic, "Durable_Subscriber")
 
-  /* def receiveMessage(): Unit = {
-     val listener: MessageListener = new MessageListener {
-       def onMessage(message: Message): Unit = {
-         try {
-           if (message.isInstanceOf[TextMessage]) {
-             val textMessage: TextMessage = message.asInstanceOf[TextMessage]
-             println("Message received: " + textMessage.getText)
-             //Once we have successfully processed the message, send an acknowledge back to ActiveMQ
-             message.acknowledge()
-           }
-         }
-         catch {
-           case ex: Exception => println(ex.getMessage)
-         }
-       }
-     }
-     durableSubscriber.setMessageListener(listener)
-   }*/
-
   val sb = new StringBuilder
+  // size of generated DNA string
   val batchSize = 100
 
+  /**
+    *
+    * @return read messages from topic (nucleotides) and generate DNA String of predefined size to feed it to alpha algorithm
+    */
   def processBatch(): String = {
     val sb = new StringBuilder
     while (sb.toString().length < batchSize) {
@@ -50,6 +36,11 @@ class Subscriber(url: String, topicName: String, ID: String) {
     }
     sb.toString()
   }
+
+  /**
+    *
+    * @return messages from topic
+    */
 
   def getCommand(): Option[String] = {
     val message: Message = subscriber.receiveNoWait()

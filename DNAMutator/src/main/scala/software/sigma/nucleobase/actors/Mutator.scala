@@ -25,9 +25,9 @@ class Mutator extends Actor with ActorLogging with Timers {
 
   import Mutator._
   import software.sigma.nucleobase.actors.MutatorCoordinator._
-
+  val COUNT: Int = 2
   val generator = new DNAGenerator
-  val nucleoStream: Stream[Nucleotides] = generator.mutation(getRandomNucleo)
+  val mutatedDNAStream: Stream[Nucleotides] = generator.putMutation(getRandomNucleo)
 
   val myConf: Config = ConfigFactory.load()
   val mutatorID: String = myConf.getString("activeMQ.DNAMutator.ID")
@@ -38,10 +38,10 @@ class Mutator extends Actor with ActorLogging with Timers {
   override def receive: Receive = {
     case StartNewTimer =>
       log.info("Starting timer...")
-      timers.startPeriodicTimer(Key, Publish, 14 seconds)
+      timers.startPeriodicTimer(Key, Publish, 10.seconds)
     case Publish =>
       log.info("Publishing...")
-      nucleoStream take 2 foreach (n => publisher.send(n.nucleo))
+      mutatedDNAStream take COUNT foreach (nucleobase => publisher.send(nucleobase.nucleo))
     case Stop =>
       log.info("Stopping...")
       timers.cancelAll()
